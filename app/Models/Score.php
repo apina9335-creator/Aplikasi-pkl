@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Score extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'internship_id',
+        'score',
+        'comments',
+    ];
+
+    public function internship()
+    {
+        return $this->belongsTo(Internship::class);
+    }
+}

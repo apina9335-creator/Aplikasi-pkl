@@ -15,7 +15,7 @@ return new class extends Migration
             // Pastikan kolom 'description' memang ada di tabel reports Anda.
             // Jika di database namanya 'activities', ganti 'description' jadi 'activities'.
             // Atau jika ragu, hapus saja bagian ->after('description')
-            $table->string('image_path')->nullable()->after('description');
+           $table->string('image_path')->nullable();
         });
     }
 

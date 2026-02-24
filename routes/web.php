@@ -16,7 +16,7 @@ use App\Http\Controllers\Student\ReportController; // Pastikan ini ada
 */
 
 Route::get('/', function () {
-    return redirect()->route('login');
+    return view('welcome');
 });
 
 // === GROUP 1: HANYA PERLU LOGIN (AUTH) ===

@@ -10,6 +10,8 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <?php if (class_exists('\Livewire\Livewire')) { echo \Livewire\Livewire::styles(); } ?>
+
         {{-- Script agar tidak "berkedip" putih saat load page jika user pilih dark mode --}}
         <script>
             if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -21,7 +23,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
+    <body class="font-sans antialiased text-gray-900 dark:text-gray-100">
         
         {{-- === 1. TOMBOL TOGGLE DARK MODE (Floating di Kanan Atas) === --}}
         <div class="fixed top-4 right-4 z-50">
@@ -100,5 +102,6 @@
                 }
             });
         </script>
+        <?php if (class_exists('\Livewire\Livewire')) { echo \Livewire\Livewire::scripts(); } ?>
     </body>
 </html>

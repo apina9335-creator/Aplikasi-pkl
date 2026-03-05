@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+<div class="py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-2xl mx-auto">
-        <h1 class="text-3xl font-bold text-gray-900 mb-8">Edit Lamaran PKL</h1>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8">Edit Lamaran PKL</h1>
 
         @if ($errors->any())
             <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
@@ -15,18 +15,19 @@
             </div>
         @endif
 
-        <form action="{{ route('student.internship-applications.update', $application->id) }}" 
+          <form action="{{ route('student.internship-applications.update', $application->id) }}" 
               method="POST" 
               enctype="multipart/form-data"
-              class="bg-white rounded-lg shadow-md p-8">
+              class="bg-white dark:bg-gray-800 dark:text-gray-200 rounded-lg shadow-md p-8">
             
             @csrf
-            @method('PUT') <div class="mb-6">
-                <label for="company_id" class="block text-sm font-medium text-gray-700 mb-2">
+            @method('PUT')
+            <div class="mb-6">
+                <label for="company_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Pilih Perusahaan PKL <span class="text-red-500">*</span>
                 </label>
                 <select name="company_id" id="company_id" required 
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-gray-200">
                     <option value="">-- Pilih Perusahaan --</option>
                     @foreach ($companies as $company)
                         <option value="{{ $company->id }}" 
@@ -42,19 +43,19 @@
             </div>
 
             <div class="mb-6">
-                <label for="motivation" class="block text-sm font-medium text-gray-700 mb-2">
+                <label for="motivation" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Motivasi & Alasan <span class="text-red-500">*</span>
                 </label>
                 {{-- Isi textarea dengan data lama ($application->motivation) --}}
                 <textarea name="motivation" id="motivation" rows="6" required 
-                          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ old('motivation', $application->motivation) }}</textarea>
+                          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-gray-200">{{ old('motivation', $application->motivation) }}</textarea>
                 @error('motivation')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>
 
             <div class="mb-6">
-                <label for="attachment" class="block text-sm font-medium text-gray-700 mb-2">
+                <label for="attachment" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Update File Lampiran (Opsional)
                 </label>
                 
@@ -64,10 +65,10 @@
                     </div>
                 @endif
 
-                <input type="file" name="attachment" id="attachment" 
-                       accept=".pdf,.doc,.docx"
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                <p class="text-xs text-gray-500 mt-1">Biarkan kosong jika tidak ingin mengubah file.</p>
+                  <input type="file" name="attachment" id="attachment" 
+                      accept=".pdf,.doc,.docx"
+                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 dark:text-gray-200">
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Biarkan kosong jika tidak ingin mengubah file.</p>
                 @error('attachment')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror

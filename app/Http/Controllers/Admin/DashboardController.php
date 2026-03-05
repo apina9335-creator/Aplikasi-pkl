@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request; // <--- PENTING: Jangan lupa import ini!
 use App\Models\InternshipApplication;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
@@ -25,7 +26,15 @@ class DashboardController extends Controller
                                 ->take(5)
                                 ->get();
 
-        return view('admin.dashboard', compact('stats', 'recentApplications'));
+        // 3. Ambil daftar siswa terbaru untuk ditampilkan di dashboard (jika ada)
+        //    Urutkan berdasarkan waktu pendaftaran terbaru sehingga pendaftar baru terlihat
+        $students = User::where('role', 'mahasiswa')
+                ->with('latestInternshipApplication')
+                ->orderBy('created_at', 'desc')
+                ->limit(10)
+                ->get();
+
+        return view('admin.dashboard', compact('stats', 'recentApplications', 'students'));
     }
 
     /**

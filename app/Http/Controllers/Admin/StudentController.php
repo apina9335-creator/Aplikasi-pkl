@@ -8,58 +8,83 @@ use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $students = User::where('role', 'mahasiswa')->paginate(15);
+        $query = User::query()->where('role', 'mahasiswa');
+
+        if ($search = $request->query('q')) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('school', 'like', "%{$search}%")
+                  ->orWhere('nim', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $students = $query->orderBy('name')->paginate(15)->withQueryString();
+
         return view('admin.students.index', compact('students'));
     }
 
-    public function show(User $user)
+    public function create()
     {
-        if ($user->role !== 'mahasiswa') {
-            abort(404);
-        }
-        
-        $internships = $user->internships()->with(['company', 'advisor'])->get();
-        return view('admin.students.show', compact('user', 'internships'));
+        return view('admin.students.create');
     }
 
-    public function edit(User $user)
+    public function store(Request $request)
     {
-        if ($user->role !== 'mahasiswa') {
-            abort(404);
-        }
-        
-        return view('admin.students.edit', compact('user'));
-    }
-
-    public function update(Request $request, User $user)
-    {
-        if ($user->role !== 'mahasiswa') {
-            abort(404);
-        }
-        
-        $validated = $request->validate([
+        $data = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'nim' => 'required|string|unique:users,nim,' . $user->id,
-            'phone' => 'nullable|string',
-            'major' => 'nullable|string',
-            'semester' => 'nullable|integer|min:1|max:8',
+            'email' => 'required|email|unique:users,email',
+            'nim' => 'nullable|string|max:50',
+            'school' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:30',
+            'password' => 'required|string|min:6|confirmed',
         ]);
-        
-        $user->update($validated);
-        
-        return redirect()->route('admin.students.show', $user)->with('success', 'Mahasiswa berhasil diperbarui');
+
+        $data['role'] = 'mahasiswa';
+        $data['password'] = bcrypt($data['password']);
+
+        User::create($data);
+
+        return redirect()->route('admin.students.index')->with('success', 'Siswa berhasil ditambahkan.');
     }
 
-    public function destroy(User $user)
+    public function edit($id)
     {
-        if ($user->role !== 'mahasiswa') {
-            abort(404);
+        $student = User::where('role', 'mahasiswa')->findOrFail($id);
+        return view('admin.students.edit', compact('student'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $student = User::where('role', 'mahasiswa')->findOrFail($id);
+
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => "required|email|unique:users,email,{$id}",
+            'nim' => 'nullable|string|max:50',
+            'school' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:30',
+            'password' => 'nullable|string|min:6|confirmed',
+        ]);
+
+        if (empty($data['password'])) {
+            unset($data['password']);
+        } else {
+            $data['password'] = bcrypt($data['password']);
         }
-        
-        $user->delete();
-        return redirect()->route('admin.students.index')->with('success', 'Mahasiswa berhasil dihapus');
+
+        $student->update($data);
+
+        return redirect()->route('admin.students.index')->with('success', 'Siswa berhasil diperbarui.');
+    }
+
+    public function destroy($id)
+    {
+        $student = User::where('role', 'mahasiswa')->findOrFail($id);
+        $student->delete();
+        return redirect()->route('admin.students.index')->with('success', 'Siswa berhasil dihapus.');
     }
 }

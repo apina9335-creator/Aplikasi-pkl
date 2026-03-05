@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-100 leading-tight">
             {{ __('Detail Lamaran PKL') }}
         </h2>
     </x-slot>
@@ -14,14 +14,14 @@
                 Kembali ke Daftar
             </a>
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border-t-4 border-blue-500">
+            <div class="bg-white dark:bg-gray-800 dark:text-gray-200 overflow-hidden shadow-sm sm:rounded-lg border-t-4 border-blue-500">
                 <div class="p-8">
                     
                     {{-- Header Lamaran --}}
                     <div class="flex justify-between items-start mb-8 border-b pb-6">
                         <div>
-                            <h3 class="text-2xl font-bold text-gray-900">{{ $application->company->name ?? 'PT Global Intermedia' }}</h3>
-                            <p class="text-gray-500 mt-1">Diajukan pada: {{ $application->created_at->format('d F Y') }}</p>
+                            <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $application->company->name ?? 'PT Global Intermedia' }}</h3>
+                            <p class="text-gray-500 dark:text-gray-300 mt-1">Diajukan pada: {{ $application->created_at->format('d F Y') }}</p>
                         </div>
                         
                         {{-- Badge Status --}}
@@ -42,19 +42,19 @@
                         <div class="col-span-1 space-y-6">
                             <div>
                                 <label class="text-xs font-bold text-gray-400 uppercase tracking-wide">Asal Sekolah</label>
-                                <p class="text-gray-800 font-medium text-lg">{{ $application->school ?? '-' }}</p>
+                                <p class="text-gray-800 dark:text-gray-100 font-medium text-lg">{{ $application->school ?? '-' }}</p>
                             </div>
 
                             <div>
                                 <label class="text-xs font-bold text-gray-400 uppercase tracking-wide">Periode Magang</label>
                                 @if($application->start_date && $application->end_date)
-                                    <p class="text-gray-800 font-medium">
+                                    <p class="text-gray-800 dark:text-gray-100 font-medium">
                                         {{ \Carbon\Carbon::parse($application->start_date)->format('d M Y') }} 
                                         <br><span class="text-gray-400 text-sm">sampai</span><br>
                                         {{ \Carbon\Carbon::parse($application->end_date)->format('d M Y') }}
                                     </p>
                                 @else
-                                    <p class="text-gray-400 italic">-</p>
+                                    <p class="text-gray-400 dark:text-gray-300 italic">-</p>
                                 @endif
                             </div>
                         </div>
@@ -65,7 +65,7 @@
                             {{-- Motivasi --}}
                             <div>
                                 <label class="text-xs font-bold text-gray-400 uppercase tracking-wide">Motivasi Magang</label>
-                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 mt-2 text-gray-700 leading-relaxed italic">
+                                <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border border-gray-100 dark:border-gray-700 mt-2 text-gray-700 dark:text-gray-200 leading-relaxed italic">
                                     "{{ $application->motivation }}"
                                 </div>
                             </div>

@@ -51,6 +51,9 @@ Route::middleware('auth')->group(function () {
                 // Review Lamaran
                 Route::get('/applications/{id}', [AdminDashboard::class, 'show'])->name('applications.show');
                 Route::patch('/applications/{id}/update', [AdminDashboard::class, 'updateStatus'])->name('applications.update');
+
+                // CRUD Siswa (Admin)
+                Route::resource('students', App\Http\Controllers\Admin\StudentController::class);
             });
         });
 

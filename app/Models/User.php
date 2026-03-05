@@ -99,4 +99,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(InternshipApplication::class);
     }
+
+    /**
+     * Get the latest internship application for this user.
+     */
+    public function latestInternshipApplication()
+    {
+        return $this->hasOne(InternshipApplication::class)->latestOfMany();
+    }
 }

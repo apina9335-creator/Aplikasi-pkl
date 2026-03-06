@@ -4,11 +4,7 @@
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
-        {{-- JUDUL LOGIN --}}
-        <div class="mb-6 text-center">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Selamat Datang Kembali! 👋</h2>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Silakan login untuk mengakses akun Anda.</p>
-        </div>
+        {{-- Judul dobel sudah dihapus dari sini --}}
 
         <div>
             <label for="email" class="block font-medium text-sm text-gray-700 dark:text-gray-300">Email</label>

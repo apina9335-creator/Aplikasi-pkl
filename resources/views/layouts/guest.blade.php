@@ -5,91 +5,62 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>SIPKL - Login</title>
 
+        <link rel="shortcut icon" href="//www.gi.co.id/dist/images/favicon.ico">
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         
-        <script>
-            if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
+        <style>
+            /* Mengambil gambar background persis seperti halaman awal */
+            .bg-login-gi {
+                background-image: url('//www.gi.co.id/dist/images/intro-carousel/slide_1.jpg');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
             }
-        </script>
-    </head>
-    <body class="font-sans text-gray-900 antialiased">
-        
-        {{-- === TOMBOL DARK MODE (Pojok Kanan Atas) === --}}
-        <div class="fixed top-4 right-4 z-50">
-            <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 transition bg-white dark:bg-gray-800 shadow-md">
-                <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-                </svg>
-                <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
-                </svg>
-            </button>
-        </div>
-
-        {{-- === LAYOUT UTAMA === --}}
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
             
-            {{-- Bagian Logo --}}
-            <div>
+            /* Efek gelap dan blur agar kotak form lebih menonjol */
+            .overlay-gi {
+                background: rgba(0, 0, 0, 0.75); 
+                backdrop-filter: blur(6px); 
+                min-height: 100vh;
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body class="font-sans text-gray-900 antialiased bg-login-gi">
+        
+        <div class="overlay-gi flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
+            
+            {{-- Logo Perusahaan (Bisa diklik untuk kembali ke awal) --}}
+            <div class="mb-6 mt-10 sm:mt-0">
                 <a href="/">
-                   <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                    <img src="//www.gi.co.id/dist/images/logo_gi.png" alt="Logo GI" class="w-64 mx-auto drop-shadow-md">
                 </a>
             </div>
 
-            {{-- === INI KOTAKNYA (CARD) YANG KEMARIN HILANG === --}}
-            {{-- Saya sudah kembalikan + tambah support dark mode (dark:bg-gray-800) --}}
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg transition-colors duration-300">
+            {{-- Kotak Form Login / Register --}}
+            <div class="w-full sm:max-w-md px-8 py-8 bg-white shadow-2xl overflow-hidden sm:rounded-2xl border-t-4 border-blue-600">
+                
+                {{-- Judul Sambutan --}}
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800"></h2>
+                    <p class="text-sm text-gray-500 mt-1"></p>
+                </div>
+
+                {{-- Di sinilah form input email & password Laravel akan otomatis muncul --}}
                 {{ $slot }}
+                
+            </div>
+
+            {{-- Copyright bawah --}}
+            <div class="mt-8 text-gray-300 text-sm tracking-wide">
+                &copy; {{ date('Y') }} SIPKL Project - Global Intermedia
             </div>
 
         </div>
-
-        {{-- === LOGIKA JAVASCRIPT === --}}
-        <script>
-            var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
-            var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
-
-            // Cek kondisi awal
-            if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                themeToggleLightIcon.classList.remove('hidden');
-            } else {
-                themeToggleDarkIcon.classList.remove('hidden');
-            }
-
-            var themeToggleBtn = document.getElementById('theme-toggle');
-
-            themeToggleBtn.addEventListener('click', function() {
-                // Toggle ikon
-                themeToggleDarkIcon.classList.toggle('hidden');
-                themeToggleLightIcon.classList.toggle('hidden');
-
-                // Simpan preferensi
-                if (localStorage.getItem('color-theme')) {
-                    if (localStorage.getItem('color-theme') === 'light') {
-                        document.documentElement.classList.add('dark');
-                        localStorage.setItem('color-theme', 'dark');
-                    } else {
-                        document.documentElement.classList.remove('dark');
-                        localStorage.setItem('color-theme', 'light');
-                    }
-                } else {
-                    if (document.documentElement.classList.contains('dark')) {
-                        document.documentElement.classList.remove('dark');
-                        localStorage.setItem('color-theme', 'light');
-                    } else {
-                        document.documentElement.classList.add('dark');
-                        localStorage.setItem('color-theme', 'dark');
-                    }
-                }
-            });
-        </script>
     </body>
 </html>

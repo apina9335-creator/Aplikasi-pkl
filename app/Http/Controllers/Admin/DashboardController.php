@@ -84,4 +84,44 @@ class DashboardController extends Controller
         return redirect()->route('admin.dashboard')
             ->with('success', "Lamaran mahasiswa berhasil $statusMsg.");
     }
+
+    /**
+     * Export Data ke Excel (Format CSV)
+     */
+    public function exportExcel()
+    {
+        $applications = InternshipApplication::with('user')->get();
+        
+        $filename = "Data_Pendaftar_PKL_" . date('Ymd') . ".csv";
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['Nama Pendaftar', 'Email', 'Asal Sekolah', 'Tipe Daftar', 'Anggota Kelompok', 'Mulai', 'Selesai', 'Status'];
+
+        $callback = function() use($applications, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($applications as $app) {
+                $row['Nama Pendaftar']  = $app->user->name;
+                $row['Email']           = $app->user->email;
+                $row['Asal Sekolah']    = $app->school;
+                $row['Tipe Daftar']     = strtoupper($app->registration_type);
+                $row['Anggota Kelompok']= $app->group_members ?? '-';
+                $row['Mulai']           = $app->start_date;
+                $row['Selesai']         = $app->end_date;
+                $row['Status']          = strtoupper($app->status);
+
+                fputcsv($file, array($row['Nama Pendaftar'], $row['Email'], $row['Asal Sekolah'], $row['Tipe Daftar'], $row['Anggota Kelompok'], $row['Mulai'], $row['Selesai'], $row['Status']));
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

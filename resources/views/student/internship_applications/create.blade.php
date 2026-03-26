@@ -46,6 +46,32 @@
                            placeholder="Contoh: SMK Negeri 1 Yogyakarta" required>
             </div>
 
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700">Tipe Pendaftaran</label>
+                <select name="registration_type" id="registration_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required onchange="toggleGroupMembers()">
+                    <option value="individu">Individu</option>
+                    <option value="kelompok">Kelompok</option>
+                </select>
+            </div>
+
+            <div class="mb-4" id="group_members_div" style="display: none;">
+                <label class="block text-sm font-medium text-gray-700">Nama Anggota Kelompok Lainnya</label>
+                <textarea name="group_members" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Contoh: 1. Budi Santoso, 2. Siti Aminah"></textarea>
+                <p class="text-xs text-gray-500 mt-1">Biarkan kosong jika Anda mendaftar individu.</p>
+            </div>
+
+            <script>
+                function toggleGroupMembers() {
+                    var type = document.getElementById('registration_type').value;
+                    var groupDiv = document.getElementById('group_members_div');
+                    if (type === 'kelompok') {
+                        groupDiv.style.display = 'block';
+                    } else {
+                        groupDiv.style.display = 'none';
+                    }
+                }
+            </script>
+
             {{-- 3. TANGGAL MAGANG (Grid 2 Kolom) --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>

@@ -5,52 +5,37 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Internship extends Model
+class InternshipApplication extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'student_id',
+        'user_id',
         'company_id',
-        'advisor_id',
+        'school',
         'start_date',
         'end_date',
+        'motivation',
+        'cv_path',
         'status',
-        'rejection_reason',
+        'applied_at',
+        'registration_type', // <--- TAMBAHKAN DI SINI KAK
+        'group_members',     // <--- TAMBAHKAN DI SINI KAK
     ];
 
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
+        'applied_at' => 'datetime',
     ];
 
-    public function student()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'student_id');
+        return $this->belongsTo(User::class);
     }
 
     public function company()
     {
         return $this->belongsTo(Company::class);
-    }
-
-    public function advisor()
-    {
-        return $this->belongsTo(User::class, 'advisor_id');
-    }
-
-    public function guidanceSessions()
-    {
-        return $this->hasMany(GuidanceSession::class);
-    }
-
-    public function reports()
-    {
-        return $this->hasMany(Report::class);
-    }
-
-    public function score()
-    {
-        return $this->hasOne(Score::class);
     }
 }

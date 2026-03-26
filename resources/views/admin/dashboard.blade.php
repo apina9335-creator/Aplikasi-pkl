@@ -8,26 +8,53 @@
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             
+            {{-- Notifikasi Sukses --}}
+            @if(session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                    <strong class="font-bold">Berhasil!</strong>
+                    <span class="block sm:inline">{{ session('success') }}</span>
+                </div>
+            @endif
+
             {{-- ========================================== --}}
             {{-- KOTAK 1: LAMARAN TERBARU (DIPISAH DI ATAS) --}}
             {{-- ========================================== --}}
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">Lamaran Terbaru</h2>
                     
+                    {{-- Header KOTAK 1 (Judul & Tombol Export) --}}
+                    <div class="flex items-center justify-between mb-4 border-b pb-4">
+                        <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">Lamaran Terbaru</h2>
+                        
+                        {{-- TOMBOL EXPORT EXCEL --}}
+                        <a href="{{ route('admin.applications.export') }}" class="inline-flex items-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded shadow transition duration-150">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            Download Excel (CSV)
+                        </a>
+                    </div>
+                    
+                    {{-- Isi Daftar Lamaran --}}
                     @if($recentApplications->isEmpty())
-                        <p class="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">Belum ada lamaran masuk terbaru.</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg text-center border border-dashed">Belum ada lamaran masuk terbaru.</p>
                     @else
-                        <div class="space-y-3">
+                        <div class="space-y-4">
                             @foreach($recentApplications as $app)
-                                <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 border dark:border-gray-600 rounded-lg shadow-sm">
+                                <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg shadow-sm hover:shadow transition duration-150">
                                     <div class="mb-3 md:mb-0">
-                                        <div class="font-medium text-lg text-gray-800 dark:text-gray-100">
+                                        <div class="font-bold text-lg text-gray-800 dark:text-gray-100">
                                             {{ $app->user->name ?? '—' }} 
-                                            <span class="text-sm font-normal text-gray-500">({{ $app->user->email ?? '—' }})</span>
+                                            <span class="text-sm font-normal text-gray-500 bg-gray-200 px-2 py-0.5 rounded ml-2">{{ strtoupper($app->registration_type ?? 'INDIVIDU') }}</span>
                                         </div>
-                                        <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                            <span class="font-semibold">{{ $app->company->name ?? 'PT Global Intermedia' }}</span> — {{ $app->applied_at ? $app->applied_at->format('d M Y') : '' }}
+                                        <div class="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                                            Sekolah: <span class="font-medium">{{ $app->school ?? '—' }}</span>
+                                        </div>
+                                        @if($app->registration_type === 'kelompok' && !empty($app->group_members))
+                                            <div class="text-sm text-blue-600 dark:text-blue-400 mt-1">
+                                                Anggota: {{ $app->group_members }}
+                                            </div>
+                                        @endif
+                                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                                            <span class="font-semibold">{{ $app->company->name ?? 'PT Global Intermedia' }}</span> — Diajukan: {{ $app->applied_at ? $app->applied_at->format('d M Y') : '' }}
                                         </div>
                                     </div>
                                     <div class="flex items-center space-x-2">
@@ -36,13 +63,14 @@
                                                 @csrf
                                                 @method('PATCH')
                                                 <input type="hidden" name="status" value="approved">
-                                                <button type="submit" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium rounded shadow">Terima</button>
+                                                <button type="submit" onclick="return confirm('Yakin ingin menerima lamaran ini?')" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium rounded shadow transition duration-150">Terima</button>
                                             </form>
-                                            <button onclick="document.getElementById('reject-{{$app->id}}').classList.remove('hidden')" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded shadow">Tolak</button>
-                                            <form id="reject-{{$app->id}}" action="{{ route('admin.applications.update', $app->id) }}" method="POST" class="hidden">
+                                            
+                                            <form action="{{ route('admin.applications.update', $app->id) }}" method="POST">
                                                 @csrf
                                                 @method('PATCH')
                                                 <input type="hidden" name="status" value="rejected">
+                                                <button type="submit" onclick="return confirm('Yakin ingin menolak lamaran ini?')" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded shadow transition duration-150">Tolak</button>
                                             </form>
                                         @elseif($app->status === 'approved' || $app->status === 'diterima')
                                             <span class="text-sm font-bold bg-green-100 text-green-800 px-4 py-2 rounded-full border border-green-200">Diterima</span>

@@ -47,6 +47,8 @@ Route::middleware('auth')->group(function () {
             Route::middleware('check.role:admin')->group(function () {
                 // Dashboard
                 Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
+
+                Route::get('/applications/export', [AdminDashboard::class, 'exportExcel'])->name('applications.export');
                 
                 // Review Lamaran
                 Route::get('/applications/{id}', [AdminDashboard::class, 'show'])->name('applications.show');

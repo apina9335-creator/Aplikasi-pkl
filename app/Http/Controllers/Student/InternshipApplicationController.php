@@ -8,7 +8,6 @@ use App\Models\InternshipApplication;
 use App\Models\Company;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-// App\Models\Internship; <--- Tidak perlu di sini
 
 class InternshipApplicationController extends Controller
 {
@@ -44,6 +43,8 @@ class InternshipApplicationController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'motivation' => 'required|string|min:50',
             'attachment' => 'required|file|mimes:pdf,doc,docx|max:2048',
+            'registration_type' => 'required|in:individu,kelompok',
+            'group_members' => 'nullable|string'
         ]);
 
         try {
@@ -63,15 +64,18 @@ class InternshipApplicationController extends Controller
             }
 
             InternshipApplication::create([
-                'user_id'       => Auth::id(),
-                'company_id'    => $company->id,
-                'school'        => $validated['school'],
-                'start_date'    => $validated['start_date'],
-                'end_date'      => $validated['end_date'],
-                'motivation'    => $validated['motivation'],
-                'cv_path'       => $filePath,
-                'status'        => 'pending',
-                'applied_at'    => now(),
+                'user_id'           => Auth::id(),
+                'company_id'        => $company->id,
+                'school'            => $validated['school'],
+                'start_date'        => $validated['start_date'],
+                'end_date'          => $validated['end_date'],
+                'motivation'        => $validated['motivation'],
+                'cv_path'           => $filePath,
+                'status'            => 'pending',
+                'applied_at'        => now(),
+                'registration_type' => $validated['registration_type'],
+                // Set null jika tipe pendaftarannya individu, agar data lebih bersih
+                'group_members'     => $validated['registration_type'] === 'kelompok' ? $validated['group_members'] : null,
             ]);
 
             return redirect()->route('student.internship-applications.index')
@@ -119,6 +123,8 @@ class InternshipApplicationController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'motivation' => 'required|string|min:50',
             'attachment' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+            'registration_type' => 'required|in:individu,kelompok',
+            'group_members' => 'nullable|string'
         ]);
 
         try {
@@ -131,10 +137,12 @@ class InternshipApplicationController extends Controller
             }
 
             $application->update([
-                'school'     => $validated['school'],
-                'start_date' => $validated['start_date'],
-                'end_date'   => $validated['end_date'],
-                'motivation' => $validated['motivation'],
+                'school'            => $validated['school'],
+                'start_date'        => $validated['start_date'],
+                'end_date'          => $validated['end_date'],
+                'motivation'        => $validated['motivation'],
+                'registration_type' => $validated['registration_type'],
+                'group_members'     => $validated['registration_type'] === 'kelompok' ? $validated['group_members'] : null,
             ]);
 
             return redirect()->route('student.internship-applications.index')

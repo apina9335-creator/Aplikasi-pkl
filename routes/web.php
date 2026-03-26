@@ -67,8 +67,15 @@ Route::middleware('auth')->group(function () {
                 // Monitoring Laporan Siswa
                 Route::get('/monitor/{id}', [AdvisorDashboard::class, 'monitor'])->name('advisor.monitor');
 
+                Route::patch('/reports/{report}/status', [App\Http\Controllers\Advisor\StudentActivityController::class, 'updateReportStatus'])->name('advisor.reports.update-status');
+
                 // Route Activity
-                Route::resource('student-activity', StudentActivityController::class, ['as' => 'advisor']);
+               Route::resource('student-activity', StudentActivityController::class, [
+    'as' => 'advisor',
+    'parameters' => [
+        'student-activity' => 'student'
+    ]
+]);
             });
         });
 

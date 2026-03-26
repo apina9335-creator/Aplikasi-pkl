@@ -8,6 +8,7 @@ use App\Models\InternshipApplication;
 use App\Models\Company;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+// App\Models\Internship; <--- Tidak perlu di sini
 
 class InternshipApplicationController extends Controller
 {
@@ -37,17 +38,15 @@ class InternshipApplicationController extends Controller
      */
     public function store(Request $request)
     {
-        // A. Validasi (Updated: Tambah School & Tanggal)
         $validated = $request->validate([
-            'school' => 'required|string|max:255',               // <--- BARU
-            'start_date' => 'required|date',                      // <--- BARU
-            'end_date' => 'required|date|after_or_equal:start_date', // <--- BARU
+            'school' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
             'motivation' => 'required|string|min:50',
             'attachment' => 'required|file|mimes:pdf,doc,docx|max:2048',
         ]);
 
         try {
-            // LOGIKA BARU: Cari atau Buat PT Global Intermedia secara otomatis
             $company = Company::firstOrCreate(
                 ['name' => 'PT Global Intermedia'],
                 [
@@ -57,29 +56,24 @@ class InternshipApplicationController extends Controller
                 ]
             );
 
-            // B. Upload File
             if ($request->hasFile('attachment')) {
-                // Pastikan nama kolom di database sesuai (apakah 'cv_path' atau 'attachment_path')
-                // Disini saya pakai 'cvs' agar rapi
                 $filePath = $request->file('attachment')->store('cvs', 'public');
             } else {
                 return back()->withErrors(['attachment' => 'Gagal upload file.']);
             }
 
-            // C. Simpan ke Database
             InternshipApplication::create([
                 'user_id'       => Auth::id(),
                 'company_id'    => $company->id,
-                'school'        => $validated['school'],      // <--- SIMPAN SEKOLAH
-                'start_date'    => $validated['start_date'],  // <--- SIMPAN TGL MULAI
-                'end_date'      => $validated['end_date'],    // <--- SIMPAN TGL SELESAI
+                'school'        => $validated['school'],
+                'start_date'    => $validated['start_date'],
+                'end_date'      => $validated['end_date'],
                 'motivation'    => $validated['motivation'],
-                'cv_path'       => $filePath,                 // <--- Pastikan nama kolom di DB 'cv_path' (sesuai migrasi sebelumnya)
+                'cv_path'       => $filePath,
                 'status'        => 'pending',
                 'applied_at'    => now(),
             ]);
 
-            // D. Redirect Sukses
             return redirect()->route('student.internship-applications.index')
                 ->with('success', 'Lamaran ke PT Global Intermedia berhasil dikirim!');
 
@@ -104,7 +98,6 @@ class InternshipApplicationController extends Controller
             return redirect()->back()->with('error', 'Lamaran yang sudah diproses tidak dapat diedit.');
         }
 
-        // Kita tetap kirim data companies jika nanti diperlukan, meski sekarang otomatis
         $companies = Company::all();
         return view('student.internship_applications.edit', compact('application', 'companies'));
     }
@@ -120,31 +113,27 @@ class InternshipApplicationController extends Controller
             abort(403);
         }
 
-        // Validasi Update (Tambah School & Tanggal)
         $validated = $request->validate([
-            'school' => 'required|string|max:255',               // <--- BARU
-            'start_date' => 'required|date',                      // <--- BARU
-            'end_date' => 'required|date|after_or_equal:start_date', // <--- BARU
+            'school' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
             'motivation' => 'required|string|min:50',
             'attachment' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
         ]);
 
         try {
-            // Cek apakah user mengupload file baru?
             if ($request->hasFile('attachment')) {
                 $filePath = $request->file('attachment')->store('cvs', 'public');
-                // Hapus file lama jika perlu (opsional)
                 if ($application->cv_path && Storage::disk('public')->exists($application->cv_path)) {
                     Storage::disk('public')->delete($application->cv_path);
                 }
-                $application->cv_path = $filePath; // Update path
+                $application->cv_path = $filePath;
             }
 
-            // Update data lainnya
             $application->update([
-                'school'     => $validated['school'],      // <--- UPDATE SEKOLAH
-                'start_date' => $validated['start_date'],  // <--- UPDATE TGL MULAI
-                'end_date'   => $validated['end_date'],    // <--- UPDATE TGL SELESAI
+                'school'     => $validated['school'],
+                'start_date' => $validated['start_date'],
+                'end_date'   => $validated['end_date'],
                 'motivation' => $validated['motivation'],
             ]);
 
@@ -187,7 +176,6 @@ class InternshipApplicationController extends Controller
         }
 
         try {
-            // Hapus File Fisik (Gunakan nama kolom yang benar, misal cv_path)
             if ($application->cv_path && Storage::disk('public')->exists($application->cv_path)) {
                 Storage::disk('public')->delete($application->cv_path);
             }

@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request; // <--- PENTING: Jangan lupa import ini!
+use Illuminate\Http\Request; 
 use App\Models\InternshipApplication;
 use App\Models\User;
+use App\Models\Internship; // <--- BARU: Import Model Internship
 
 class DashboardController extends Controller
 {
@@ -57,14 +58,28 @@ class DashboardController extends Controller
             'status' => 'required|in:approved,rejected', // Hanya boleh 'approved' atau 'rejected'
         ]);
 
+        // 1. Cari data lamaran
         $application = InternshipApplication::findOrFail($id);
         
+        // 2. Update status lamaran
         $application->update([
             'status' => $request->status
         ]);
 
+        // 3. LOGIKA BARU: Jika diterima (approved), otomatis buat data PKL aktif
+        if ($request->status === 'approved') {
+            Internship::create([
+                'student_id' => $application->user_id,     // ID Siswa
+                'company_id' => $application->company_id,  // ID Perusahaan (PT Global Intermedia)
+                'start_date' => $application->start_date,  // Tanggal Mulai
+                'end_date'   => $application->end_date,    // Tanggal Selesai
+                'status'     => 'approved',                // Status PKL Aktif
+                // Note: advisor_id sementara NULL, nanti bisa di-assign oleh Admin/Dosen
+            ]);
+        }
+
         // Pesan notifikasi
-        $statusMsg = $request->status == 'approved' ? 'diterima' : 'ditolak';
+        $statusMsg = $request->status == 'approved' ? 'diterima dan PKL diaktifkan' : 'ditolak';
 
         return redirect()->route('admin.dashboard')
             ->with('success', "Lamaran mahasiswa berhasil $statusMsg.");

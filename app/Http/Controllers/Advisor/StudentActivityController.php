@@ -47,4 +47,25 @@ class StudentActivityController extends Controller
 
         return view('advisor.student_activity.show', compact('student', 'internship', 'activityStats', 'guidanceSessions', 'reports'));
     }
+
+    /**
+     * Memproses Approve / Reject Laporan Mahasiswa
+     */
+    public function updateReportStatus(Request $request, Report $report)
+    {
+        // Validasi input
+        $request->validate([
+            'status' => 'required|in:approved,rejected'
+        ]);
+
+        // Update status laporan di database
+        $report->update([
+            'status' => $request->status
+        ]);
+
+        // Beri pesan sukses dari aksi (Setujui / Tolak)
+        $action = $request->status === 'approved' ? 'disetujui' : 'ditolak';
+        
+        return back()->with('success', "Laporan harian berhasil $action!");
+    }
 }

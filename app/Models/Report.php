@@ -19,7 +19,8 @@ class Report extends Model
         'user_id',       // Ganti ke 'internship_id' jika tabel Anda pakai relasi ke tabel internships
         'activity_date', // Pastikan di database namanya memang 'activity_date'
         'description',   // Pastikan di database namanya 'description'
-        'image_path'     // <--- WAJIB: Harus sama dengan yang kita buat di migrasi tadi
+        'image_path',
+        'status',    // <--- WAJIB: Harus sama dengan yang kita buat di migrasi tadi
     ];
 
     public function user() {

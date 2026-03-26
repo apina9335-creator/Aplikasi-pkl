@@ -90,9 +90,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasManyThrough(GuidanceSession::class, Internship::class, 'student_id', 'internship_id');
     }
 
-    public function reports()
+   public function reports()
     {
-        return $this->hasManyThrough(Report::class, Internship::class, 'student_id', 'internship_id');
+        return $this->hasMany(Report::class, 'user_id');
     }
 
     public function internshipApplications()

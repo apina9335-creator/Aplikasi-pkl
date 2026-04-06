@@ -35,7 +35,7 @@ class InternshipApplicationController extends Controller
     /**
      * 3. Memproses Penyimpanan Data (STORE)
      */
-    public function store(Request $request)
+   public function store(Request $request)
     {
         $validated = $request->validate([
             'school' => 'required|string|max:255',

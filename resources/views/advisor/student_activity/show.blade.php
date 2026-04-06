@@ -35,11 +35,6 @@
                         <span class="text-gray-400">-</span>
                     @endif
                 </p>
-            </div>
-            <div class="bg-white rounded-lg shadow-md p-4 text-center border-b-4 border-blue-500">
-                <p class="text-sm text-gray-500 font-semibold uppercase tracking-wider">Sesi Bimbingan</p>
-                <p class="text-3xl font-bold text-blue-600 mt-2">{{ $activityStats['total_guidance'] }}</p>
-            </div>
             <div class="bg-white rounded-lg shadow-md p-4 text-center border-b-4 border-purple-500">
                 <p class="text-sm text-gray-500 font-semibold uppercase tracking-wider">Laporan Dibuat</p>
                 <p class="text-3xl font-bold text-purple-600 mt-2">{{ $activityStats['total_reports'] }}</p>
@@ -78,31 +73,6 @@
                 </div>
             </div>
         @endif
-
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 class="text-xl font-bold text-gray-900 mb-4 border-b pb-2">Sesi Bimbingan Terbaru</h2>
-            @if ($guidanceSessions && $guidanceSessions->count() > 0)
-                <div class="space-y-4 mt-4">
-                    @foreach ($guidanceSessions as $session)
-                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <p class="font-bold text-gray-900">{{ $session->topic ?? 'Topik tidak tersedia' }}</p>
-                                    <p class="text-xs text-gray-500 mt-1">{{ $session->created_at->format('d F Y • H:i') }} WIB</p>
-                                </div>
-                            </div>
-                            @if ($session->notes)
-                                <p class="text-sm text-gray-700 mt-2 bg-white p-3 rounded border border-blue-100">{{ $session->notes }}</p>
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-            @else
-                <div class="text-center py-6 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                    <p class="text-gray-500 italic">Belum ada catatan sesi bimbingan untuk siswa ini.</p>
-                </div>
-            @endif
-        </div>
 
         <div class="bg-white rounded-lg shadow-md p-6">
             <div class="flex justify-between items-center mb-4 border-b pb-2">

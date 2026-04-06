@@ -10,20 +10,20 @@
             
             {{-- Notifikasi Sukses --}}
             @if(session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                <div class="bg-green-100 dark:bg-green-900/40 border border-green-400 dark:border-green-800 text-green-700 dark:text-green-300 px-4 py-3 rounded relative" role="alert">
                     <strong class="font-bold">Berhasil!</strong>
                     <span class="block sm:inline">{{ session('success') }}</span>
                 </div>
             @endif
 
             {{-- ========================================== --}}
-            {{-- KOTAK 1: LAMARAN TERBARU (DIPISAH DI ATAS) --}}
+            {{-- KOTAK 1: LAMARAN TERBARU --}}
             {{-- ========================================== --}}
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     
-                    {{-- Header KOTAK 1 (Judul & Tombol Export) --}}
-                    <div class="flex items-center justify-between mb-4 border-b pb-4">
+                    {{-- Header KOTAK 1 --}}
+                    <div class="flex items-center justify-between mb-4 border-b border-gray-200 dark:border-gray-700 pb-4">
                         <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">Lamaran Terbaru</h2>
                         
                         {{-- TOMBOL EXPORT EXCEL --}}
@@ -35,7 +35,7 @@
                     
                     {{-- Isi Daftar Lamaran --}}
                     @if($recentApplications->isEmpty())
-                        <p class="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg text-center border border-dashed">Belum ada lamaran masuk terbaru.</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg text-center border border-dashed border-gray-300 dark:border-gray-600">Belum ada lamaran masuk terbaru.</p>
                     @else
                         <div class="space-y-4">
                             @foreach($recentApplications as $app)
@@ -43,7 +43,8 @@
                                     <div class="mb-3 md:mb-0">
                                         <div class="font-bold text-lg text-gray-800 dark:text-gray-100">
                                             {{ $app->user->name ?? '—' }} 
-                                            <span class="text-sm font-normal text-gray-500 bg-gray-200 px-2 py-0.5 rounded ml-2">{{ strtoupper($app->registration_type ?? 'INDIVIDU') }}</span>
+                                            {{-- LABEL INDIVIDU/KELOMPOK DIPERBAIKI --}}
+                                            <span class="text-sm font-normal text-gray-600 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 px-2 py-0.5 rounded ml-2">{{ strtoupper($app->registration_type ?? 'INDIVIDU') }}</span>
                                         </div>
                                         <div class="text-sm text-gray-600 dark:text-gray-300 mt-1">
                                             Sekolah: <span class="font-medium">{{ $app->school ?? '—' }}</span>
@@ -73,9 +74,11 @@
                                                 <button type="submit" onclick="return confirm('Yakin ingin menolak lamaran ini?')" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded shadow transition duration-150">Tolak</button>
                                             </form>
                                         @elseif($app->status === 'approved' || $app->status === 'diterima')
-                                            <span class="text-sm font-bold bg-green-100 text-green-800 px-4 py-2 rounded-full border border-green-200">Diterima</span>
+                                            {{-- LABEL DITERIMA DIPERBAIKI --}}
+                                            <span class="text-sm font-bold bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 px-4 py-2 rounded-full border border-green-200 dark:border-green-800/50">Diterima</span>
                                         @else
-                                            <span class="text-sm font-bold bg-red-100 text-red-800 px-4 py-2 rounded-full border border-red-200">Ditolak</span>
+                                            {{-- LABEL DITOLAK DIPERBAIKI --}}
+                                            <span class="text-sm font-bold bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300 px-4 py-2 rounded-full border border-red-200 dark:border-red-800/50">Ditolak</span>
                                         @endif
                                     </div>
                                 </div>
@@ -86,14 +89,14 @@
             </div>
 
             {{-- ========================================== --}}
-            {{-- KOTAK 2: TABEL DATA SISWA (DI BAWAH)       --}}
+            {{-- KOTAK 2: TABEL DATA SISWA --}}
             {{-- ========================================== --}}
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <div class="flex items-center justify-between mb-6">
                         <div>
                             <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Data Siswa</h2>
-                            <p class="text-sm text-gray-500 dark:text-gray-300 mt-1">Kelola data siswa, edit atau hapus sesuai kebutuhan.</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Kelola data siswa, edit atau hapus sesuai kebutuhan.</p>
                         </div>
                         <div>
                             @if(Route::has('admin.students.create'))
@@ -106,7 +109,7 @@
 
                     <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-lg">
                         <table class="min-w-full text-sm text-left text-gray-700 dark:text-gray-200">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700">
+                            <thead class="text-xs text-gray-700 dark:text-gray-300 uppercase bg-gray-100 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-700">
                                 <tr>
                                     <th class="px-4 py-3 font-semibold">No</th>
                                     <th class="px-4 py-3 font-semibold">Nama</th>
@@ -120,34 +123,35 @@
                             </thead>
                             <tbody>
                                 @forelse($students ?? $users ?? [] as $index => $student)
-                                <tr class="bg-white dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150">
-                                    <td class="px-4 py-4 align-middle text-gray-800 dark:text-gray-100">{{ $index + 1 }}</td>
+                                <tr class="bg-white dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition duration-150">
+                                    <td class="px-4 py-4 align-middle text-gray-800 dark:text-gray-200">{{ $index + 1 }}</td>
                                     <td class="px-4 py-4">
                                         <div class="flex items-center space-x-3">
                                             <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex-shrink-0">
                                                 <img src="{{ $student->image_path ?? ($student->profile_photo_url ?? 'https://ui-avatars.com/api/?name='.urlencode($student->name).'&background=ddd&color=444') }}" alt="avatar" class="w-full h-full object-cover">
                                             </div>
-                                            <div class="font-semibold text-gray-800 dark:text-gray-100 whitespace-nowrap">{{ $student->name }}</div>
+                                            <div class="font-semibold text-gray-800 dark:text-gray-200 whitespace-nowrap">{{ $student->name }}</div>
                                         </div>
                                     </td>
-                                    <td class="px-4 py-4 text-gray-800 dark:text-gray-100 whitespace-nowrap">{{ $student->nis ?? $student->id_number ?? '-' }}</td>
-                                    <td class="px-4 py-4 text-gray-800 dark:text-gray-100 whitespace-nowrap">{{ $student->school ?? ($student->detail->school ?? '-') }}</td>
-                                    <td class="px-4 py-4 text-gray-800 dark:text-gray-100 whitespace-nowrap">{{ $student->email ?? '-' }}</td>
-                                    <td class="px-4 py-4 text-gray-800 dark:text-gray-100 whitespace-nowrap">{{ $student->phone ?? $student->phone_number ?? '-' }}</td>
+                                    <td class="px-4 py-4 text-gray-800 dark:text-gray-300 whitespace-nowrap">{{ $student->nis ?? $student->id_number ?? '-' }}</td>
+                                    <td class="px-4 py-4 text-gray-800 dark:text-gray-300 whitespace-nowrap">{{ $student->school ?? ($student->detail->school ?? '-') }}</td>
+                                    <td class="px-4 py-4 text-gray-800 dark:text-gray-300 whitespace-nowrap">{{ $student->email ?? '-' }}</td>
+                                    <td class="px-4 py-4 text-gray-800 dark:text-gray-300 whitespace-nowrap">{{ $student->phone ?? $student->phone_number ?? '-' }}</td>
                                     <td class="px-4 py-4 text-center">
                                         @php
                                             $app = $student->latestInternshipApplication ?? null;
                                             $st = $app ? ($app->status ?? 'pending') : 'no_application';
                                         @endphp
 
+                                        {{-- STATUS BADGES DI TABEL DIPERBAIKI --}}
                                         @if($st === 'no_application')
                                             <span class="text-xs text-gray-500 dark:text-gray-400">-</span>
                                         @elseif($st == 'pending' || $st == 'menunggu')
-                                            <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full border border-yellow-200">Menunggu</span>
+                                            <span class="bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300 text-xs font-bold px-3 py-1 rounded-full border border-yellow-200 dark:border-yellow-800/50">Menunggu</span>
                                         @elseif(in_array($st, ['approved','diterima']))
-                                            <span class="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full border border-green-200">Diterima</span>
+                                            <span class="bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 text-xs font-bold px-3 py-1 rounded-full border border-green-200 dark:border-green-800/50">Diterima</span>
                                         @else
-                                            <span class="bg-red-100 text-red-800 text-xs font-bold px-3 py-1 rounded-full border border-red-200">Ditolak</span>
+                                            <span class="bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300 text-xs font-bold px-3 py-1 rounded-full border border-red-200 dark:border-red-800/50">Ditolak</span>
                                         @endif
                                     </td>
                                     <td class="px-4 py-4 text-center">
@@ -172,7 +176,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="8" class="px-4 py-12 text-center text-gray-500 dark:text-gray-300">
+                                    <td colspan="8" class="px-4 py-12 text-center text-gray-500 dark:text-gray-400">
                                         Tidak ada data siswa.
                                     </td>
                                 </tr>

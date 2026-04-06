@@ -19,7 +19,9 @@ class InternshipApplication extends Model
         'approved_at',
         'approved_by',
         'rejection_reason',
-         'cv_path',
+        'cv_path',
+        'registration_type', // <--- DITAMBAHKAN INI AGAR DATA KELOMPOK BISA MASUK
+        'group_members',     // <--- DITAMBAHKAN INI AGAR NAMA TEMAN BISA MASUK
     ];
 
     protected $casts = [
@@ -52,4 +54,3 @@ class InternshipApplication extends Model
         return $this->status === 'rejected';
     }
 }
-

@@ -9,22 +9,30 @@
                     </a>
                 </div>
 
+                {{-- MENU DESKTOP (PC/LAPTOP) --}}
                 <div class="hidden space-x-2 sm:-my-px sm:ms-10 sm:flex">
-                    <a href="{{ route('dashboard') }}" class="inline-flex items-center px-4 py-2 border-b-2 {{ request()->routeIs('dashboard') ? 'border-white text-white' : 'border-transparent text-blue-100 dark:text-gray-300 hover:text-white' }} font-medium transition duration-200">
-                        📊 Dashboard
-                    </a>
                     @auth
                         @if (auth()->user()->role === 'mahasiswa')
+                            <a href="{{ route('dashboard') }}" class="inline-flex items-center px-4 py-2 border-b-2 {{ request()->routeIs('dashboard') ? 'border-white text-white' : 'border-transparent text-blue-100 dark:text-gray-300 hover:text-white' }} font-medium transition duration-200">
+                                📊 Dashboard
+                            </a>
                             <a href="{{ route('student.internship-applications.index') }}" class="inline-flex items-center px-4 py-2 border-b-2 {{ request()->routeIs('student.internship-applications*') ? 'border-white text-white' : 'border-transparent text-blue-100 dark:text-gray-300 hover:text-white' }} font-medium transition duration-200">
                                 📋 Daftar PKL
                             </a>
                         @elseif (auth()->user()->role === 'admin')
                             <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-4 py-2 border-b-2 {{ request()->routeIs('admin.dashboard') ? 'border-white text-white' : 'border-transparent text-blue-100 dark:text-gray-300 hover:text-white' }} font-medium transition duration-200">
-                                ✅ Approval PKL
+                                📊 Dashboard Admin
+                            </a>
+                            <a href="{{ route('admin.internship-applications.index') }}" class="inline-flex items-center px-4 py-2 border-b-2 {{ request()->routeIs('admin.internship-applications*') ? 'border-white text-white' : 'border-transparent text-blue-100 dark:text-gray-300 hover:text-white' }} font-medium transition duration-200">
+                                📋 Data Lamaran
+                            </a>
+                            <a href="{{ route('admin.students.index') }}" class="inline-flex items-center px-4 py-2 border-b-2 {{ request()->routeIs('admin.students*') ? 'border-white text-white' : 'border-transparent text-blue-100 dark:text-gray-300 hover:text-white' }} font-medium transition duration-200">
+                                👥 Data Siswa
                             </a>
                         @elseif (auth()->user()->role === 'dosen')
-                            <a href="{{ route('advisor.student-activity.index') }}" class="inline-flex items-center px-4 py-2 border-b-2 {{ request()->routeIs('advisor.student-activity*') ? 'border-white text-white' : 'border-transparent text-blue-100 dark:text-gray-300 hover:text-white' }} font-medium transition duration-200">
-                                👥 Keaktivan Siswa
+                            {{-- MENU DOSEN SEKARANG HANYA DASHBOARD --}}
+                            <a href="{{ route('dashboard') }}" class="inline-flex items-center px-4 py-2 border-b-2 {{ request()->routeIs('dashboard') ? 'border-white text-white' : 'border-transparent text-blue-100 dark:text-gray-300 hover:text-white' }} font-medium transition duration-200">
+                                📊 Dashboard
                             </a>
                         @endif
                     @endauth
@@ -49,7 +57,6 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        {{-- PERBAIKAN: Teks Dropdown support Dark Mode --}}
                         <div class="px-4 py-2 text-gray-600 dark:text-gray-300 text-sm border-b border-gray-200 dark:border-gray-600">
                             <p class="font-semibold text-gray-800 dark:text-white">{{ Auth::user()->name }}</p>
                             <p class="text-gray-500 dark:text-gray-400">{{ Auth::user()->email }}</p>
@@ -60,7 +67,6 @@
 
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-
                             <x-dropdown-link :href="route('logout')"
                                              onclick="event.preventDefault();
                                                 this.closest('form').submit();"
@@ -83,24 +89,31 @@
         </div>
     </div>
 
-    {{-- PERBAIKAN: Mobile Menu support Dark Mode --}}
+    {{-- MENU MOBILE (LAYAR HP) --}}
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-blue-700 dark:bg-gray-800">
-        <div class="pt-2 pb-3 space-y-1">
-            <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-white hover:bg-blue-600 dark:hover:bg-gray-700 rounded-lg">
-                📊 Dashboard
-            </a>
+        <div class="pt-2 pb-3 space-y-1 px-2">
             @auth
                 @if (auth()->user()->role === 'mahasiswa')
-                    <a href="{{ route('student.internship-applications.index') }}" class="block px-4 py-2 text-blue-100 dark:text-gray-300 hover:text-white hover:bg-blue-600 dark:hover:bg-gray-700 rounded-lg">
+                    <a href="{{ route('dashboard') }}" class="block px-4 py-2 {{ request()->routeIs('dashboard') ? 'bg-blue-800 dark:bg-gray-900 text-white' : 'text-blue-100 dark:text-gray-300 hover:text-white hover:bg-blue-600 dark:hover:bg-gray-700' }} rounded-lg">
+                        📊 Dashboard
+                    </a>
+                    <a href="{{ route('student.internship-applications.index') }}" class="block px-4 py-2 {{ request()->routeIs('student.internship-applications*') ? 'bg-blue-800 dark:bg-gray-900 text-white' : 'text-blue-100 dark:text-gray-300 hover:text-white hover:bg-blue-600 dark:hover:bg-gray-700' }} rounded-lg">
                         📋 Daftar PKL
                     </a>
                 @elseif (auth()->user()->role === 'admin')
-                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-blue-100 dark:text-gray-300 hover:text-white hover:bg-blue-600 dark:hover:bg-gray-700 rounded-lg">
-                        ✅ Approval PKL
+                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 {{ request()->routeIs('admin.dashboard') ? 'bg-blue-800 dark:bg-gray-900 text-white' : 'text-blue-100 dark:text-gray-300 hover:text-white hover:bg-blue-600 dark:hover:bg-gray-700' }} rounded-lg">
+                        📊 Dashboard Admin
+                    </a>
+                    <a href="{{ route('admin.internship-applications.index') }}" class="block px-4 py-2 {{ request()->routeIs('admin.internship-applications*') ? 'bg-blue-800 dark:bg-gray-900 text-white' : 'text-blue-100 dark:text-gray-300 hover:text-white hover:bg-blue-600 dark:hover:bg-gray-700' }} rounded-lg">
+                        📋 Data Lamaran
+                    </a>
+                    <a href="{{ route('admin.students.index') }}" class="block px-4 py-2 {{ request()->routeIs('admin.students*') ? 'bg-blue-800 dark:bg-gray-900 text-white' : 'text-blue-100 dark:text-gray-300 hover:text-white hover:bg-blue-600 dark:hover:bg-gray-700' }} rounded-lg">
+                        👥 Data Siswa
                     </a>
                 @elseif (auth()->user()->role === 'dosen')
-                    <a href="{{ route('advisor.student-activity.index') }}" class="block px-4 py-2 text-blue-100 dark:text-gray-300 hover:text-white hover:bg-blue-600 dark:hover:bg-gray-700 rounded-lg">
-                        👥 Keaktivan Siswa
+                    {{-- MENU DOSEN SEKARANG HANYA DASHBOARD --}}
+                    <a href="{{ route('dashboard') }}" class="block px-4 py-2 {{ request()->routeIs('dashboard') ? 'bg-blue-800 dark:bg-gray-900 text-white' : 'text-blue-100 dark:text-gray-300 hover:text-white hover:bg-blue-600 dark:hover:bg-gray-700' }} rounded-lg">
+                        📊 Dashboard
                     </a>
                 @endif
             @endauth
@@ -112,7 +125,7 @@
                 <div class="font-medium text-sm text-blue-200 dark:text-gray-400">{{ Auth::user()->email }}</div>
             </div>
 
-            <div class="space-y-1">
+            <div class="space-y-1 px-2">
                 <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-blue-100 dark:text-gray-300 hover:text-white hover:bg-blue-600 dark:hover:bg-gray-700 rounded-lg">
                     👤 Profil
                 </a>

@@ -18,9 +18,23 @@
                             <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm">Cari</button>
                         </form>
                         
-                        <div>
+                        {{-- TOMBOL AKSI (DOWNLOAD EXCEL & TAMBAH SISWA) --}}
+                        <div class="flex items-center gap-2">
+                            {{-- Tombol Download Excel (Baru Ditambahkan) --}}
+                            @if(Route::has('admin.students.export'))
+                                <a href="{{ route('admin.students.export') }}" class="inline-flex items-center px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm font-medium shadow-sm transition-colors">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                    </svg>
+                                    Download Excel
+                                </a>
+                            @endif
+
+                            {{-- Tombol Tambah Siswa --}}
                             @if(Route::has('admin.students.create'))
-                                <a href="{{ route('admin.students.create') }}" class="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium shadow-sm transition-colors">+ Tambah Siswa</a>
+                                <a href="{{ route('admin.students.create') }}" class="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium shadow-sm transition-colors">
+                                    + Tambah Siswa
+                                </a>
                             @endif
                         </div>
                     </div>

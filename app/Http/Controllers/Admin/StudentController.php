@@ -87,4 +87,35 @@ class StudentController extends Controller
         $student->delete();
         return redirect()->route('admin.students.index')->with('success', 'Siswa berhasil dihapus.');
     }
+
+    /**
+     * Download Excel Data Siswa
+     */
+    public function exportExcel()
+    {
+        // 1. Ambil data semua siswa
+        $students = \App\Models\User::where('role', 'student')
+                        ->orWhere('role', 'mahasiswa')
+                        ->get();
+
+        // 2. Buat header untuk file CSV/Excel
+        $csvData = "No,Nama,NIS/NIM,Asal Sekolah,Email,No. HP\n";
+
+        // 3. Masukkan data per baris
+        foreach ($students as $index => $student) {
+            // Karena kadang ada koma di nama sekolah, kita bungkus pakai tanda kutip
+            $nama    = '"' . str_replace('"', '""', $student->name) . '"';
+            $nis     = '"' . str_replace('"', '""', $student->nis ?? $student->id_number ?? '-') . '"';
+            $sekolah = '"' . str_replace('"', '""', $student->school ?? '-') . '"';
+            $email   = '"' . str_replace('"', '""', $student->email) . '"';
+            $phone   = '"' . str_replace('"', '""', $student->phone ?? $student->phone_number ?? '-') . '"';
+
+            $csvData .= ($index + 1) . ",{$nama},{$nis},{$sekolah},{$email},{$phone}\n";
+        }
+
+        // 4. Perintah browser untuk download sebagai file CSV (Excel)
+        return response($csvData)
+            ->header('Content-Type', 'text/csv')
+            ->header('Content-Disposition', 'attachment; filename="Data_Siswa_SIPKL.csv"');
+    }
 }

@@ -131,130 +131,138 @@
                         </div>
 
                     @elseif($application->status == 'approved')
-                      {{-- Welcome Message --}}
-                            <div class="bg-emerald-50 dark:bg-gray-800 border border-emerald-200 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
-                                <div class="flex items-center gap-5">
-                                    <div class="flex-shrink-0">
-                                        <div class="w-14 h-14 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center shadow-sm border border-emerald-100 dark:border-gray-600">
-                                            <span class="text-2xl">🎉</span>
+                        {{-- Welcome Message --}}
+                        <div class="bg-emerald-50 dark:bg-gray-800 border border-emerald-200 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
+                            <div class="flex items-center gap-5">
+                                <div class="flex-shrink-0">
+                                    <div class="w-14 h-14 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center shadow-sm border border-emerald-100 dark:border-gray-600">
+                                        <span class="text-2xl">🎉</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-1">Selamat! Anda Diterima PKL</h4>
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                        Anda telah resmi diterima. Silakan mulai rutinitas mengisi laporan kegiatan harian Anda di bawah.
+                                    </p>
+                                    @if($application->company_name)
+                                        <div class="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-100 dark:bg-gray-700 border border-transparent dark:border-gray-600 rounded-lg text-xs font-semibold text-emerald-800 dark:text-gray-200">
+                                            <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                            </svg>
+                                            {{ $application->company_name }}
                                         </div>
-                                    </div>
-                                    <div>
-                                        <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-1">Selamat! Anda Diterima PKL</h4>
-                                        <p class="text-gray-600 dark:text-gray-300 text-sm">
-                                            Anda telah resmi diterima. Silakan mulai rutinitas mengisi laporan kegiatan harian Anda di bawah.
-                                        </p>
-                                        @if($application->company_name)
-                                            <div class="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-100 dark:bg-gray-700 border border-transparent dark:border-gray-600 rounded-lg text-xs font-semibold text-emerald-800 dark:text-gray-200">
-                                                <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                                                </svg>
-                                                {{ $application->company_name }}
-                                            </div>
-                                        @endif
-                                    </div>
+                                    @endif
                                 </div>
                             </div>
-                            {{-- FITUR LAPORAN HARIAN & RIWAYAT --}}
-                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                                
-                                {{-- Form Input Kegiatan (Porsi Lebih Besar) --}}
-                                <div class="lg:col-span-7 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
-                                    <div class="border-b border-gray-100 dark:border-gray-700 px-6 py-4 bg-gray-50/50 dark:bg-gray-800/50">
-                                        <h4 class="font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                            </svg>
-                                            Input Laporan Hari Ini
-                                        </h4>
-                                    </div>
-                                    
-                                    <div class="p-6">
-                                        <form action="{{ route('student.reports.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
-                                            @csrf
-                                            
-                                            <div>
-                                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                                    Tanggal Kegiatan
-                                                </label>
-                                                <input type="date" name="activity_date" 
-                                                       class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:bg-white dark:focus:bg-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all duration-200" 
-                                                       required>
-                                            </div>
+                        </div>
 
-                                            <div>
-                                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                                    Deskripsi Kegiatan
-                                                </label>
-                                                <textarea name="description" rows="4" 
-                                                          class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white placeholder-gray-400 focus:bg-white dark:focus:bg-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all duration-200 resize-none" 
-                                                          placeholder="Contoh: Memperbaiki bug pada fitur login, melakukan testing sistem..." 
-                                                          required></textarea>
-                                            </div>
-
-                                            <div>
-                                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                                    Bukti Foto <span class="text-xs font-normal text-gray-400">(Opsional, Maks 2MB)</span>
-                                                </label>
-                                                <div class="relative group border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-xl p-6 hover:border-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-all duration-200 text-center">
-                                                    <input type="file" name="photo" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                                                    <div class="flex flex-col items-center justify-center gap-2">
-                                                        <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 transition-colors">
-                                                            <svg class="h-5 w-5 text-gray-500 dark:text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-                                                            </svg>
-                                                        </div>
-                                                        <p class="text-sm text-gray-600 dark:text-gray-400">
-                                                            <span class="font-semibold text-blue-600 dark:text-blue-400">Klik untuk upload</span> foto kegiatan
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <button type="submit" 
-                                                    class="w-full mt-2 bg-blue-600 text-white font-semibold py-3 px-4 rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 flex justify-center items-center gap-2">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                                                </svg>
-                                                Kirim Laporan
-                                            </button>
-                                        </form>
-                                    </div>
+                        {{-- FITUR LAPORAN HARIAN & RIWAYAT --}}
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
+                            
+                            {{-- Form Input Kegiatan (Porsi Lebih Besar) --}}
+                            <div class="lg:col-span-7 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+                                <div class="border-b border-gray-100 dark:border-gray-700 px-6 py-4 bg-gray-50/50 dark:bg-gray-800/50">
+                                    <h4 class="font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                        Input Laporan Hari Ini
+                                    </h4>
                                 </div>
-
-                              {{-- Informasi dan Link Riwayat (Porsi Lebih Kecil) --}}
-                                <div class="lg:col-span-5 flex flex-col gap-6">
-                                    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden relative flex-1 flex flex-col">
-                                        {{-- Background Pattern (Titik-titik transparan) --}}
-                                        <div class="absolute inset-0 opacity-[0.03] dark:opacity-10 text-gray-900 dark:text-white" style="background-image: radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0); background-size: 20px 20px;"></div>
+                                
+                                <div class="p-6">
+                                    <form action="{{ route('student.reports.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+                                        @csrf
                                         
-                                        <div class="p-8 relative z-10 flex flex-col h-full justify-center items-center text-center">
-                                            <div class="w-20 h-20 bg-blue-50 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mb-5 border border-blue-100 dark:border-blue-800/50">
-                                                <svg class="w-10 h-10 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                                </svg>
-                                            </div>
-                                            
-                                            <h4 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Riwayat Laporan</h4>
-                                            <p class="text-gray-500 dark:text-gray-400 text-sm mb-8 leading-relaxed">
-                                                Akses seluruh rekam jejak kegiatan PKL Anda yang telah dikirimkan sebelumnya.
-                                            </p>
-                                            
-                                            <a href="{{ route('student.reports.index') }}" 
-                                               class="w-full bg-blue-50 dark:bg-gray-700 text-blue-700 dark:text-blue-400 font-bold py-3.5 px-6 rounded-xl hover:bg-blue-100 dark:hover:bg-gray-600 transition-all duration-200 border border-blue-100 dark:border-gray-600 hover:-translate-y-0.5">
-                                                Lihat Semua Laporan
-                                            </a>
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                                Tanggal Kegiatan
+                                            </label>
+                                            <input type="date" name="activity_date" value="{{ date('Y-m-d') }}"
+                                                   class="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 outline-none transition-all duration-200" 
+                                                   required>
+                                        </div>
 
-                                            {{-- Statistik sederhana --}}
-                                            @if(isset($reportsCount))
-                                            <div class="w-full mt-8 pt-6 border-t border-gray-100 dark:border-gray-700">
-                                                <div class="flex justify-between items-center px-2">
-                                                    <span class="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Laporan Terkirim</span>
-                                                    <span class="font-black text-3xl text-gray-900 dark:text-white">{{ $reportsCount }}</span>
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                                Deskripsi Kegiatan
+                                            </label>
+                                            <textarea name="description" rows="4" 
+                                                      class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 outline-none transition-all duration-200 resize-none" 
+                                                      placeholder="Contoh: Memperbaiki bug pada fitur login, melakukan testing sistem..." 
+                                                      required></textarea>
+                                        </div>
+
+                                        {{-- KOTAK UPLOAD FOTO DASHBOARD --}}
+                                        <div class="mb-6">
+                                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                                                Bukti Foto <span class="text-gray-400 font-normal">(Opsional, Maks 2MB)</span>
+                                            </label>
+                                            
+                                            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all relative group">
+                                                <div class="space-y-2 text-center">
+                                                    <svg class="mx-auto h-10 w-10 text-gray-400 dark:text-gray-500" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                                    </svg>
+                                                    <div class="flex text-sm text-gray-600 dark:text-gray-400 justify-center">
+                                                        <label for="photo-dashboard" class="relative cursor-pointer bg-white dark:bg-gray-800 rounded-md font-bold text-blue-600 dark:text-blue-400 hover:text-blue-500 focus-within:outline-none transition-colors">
+                                                            <span>Klik untuk upload foto kegiatan</span>
+                                                            <input id="photo-dashboard" name="photo" type="file" accept="image/*" class="sr-only" onchange="previewDashboardImage(event)">
+                                                        </label>
+                                                    </div>
+                                                    <p id="filename-dashboard" class="text-xs text-gray-500 dark:text-gray-400 font-medium">PNG, JPG, JPEG maksimal 2MB</p>
                                                 </div>
                                             </div>
-                                            @endif
+
+                                            {{-- Tempat Live Preview Foto Muncul --}}
+                                            <div class="mt-4 flex justify-center">
+                                                <img id="preview-img-dashboard" src="#" alt="Preview" class="hidden max-h-48 w-auto object-cover rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
+                                            </div>
                                         </div>
+
+                                        <button type="submit" 
+                                                class="w-full mt-2 bg-blue-600 text-white font-semibold py-3 px-4 rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 flex justify-center items-center gap-2">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                            </svg>
+                                            Kirim Laporan
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            {{-- Informasi dan Link Riwayat (Porsi Lebih Kecil) --}}
+                            <div class="lg:col-span-5 flex flex-col gap-6">
+                                <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden relative flex-1 flex flex-col">
+                                    {{-- Background Pattern (Titik-titik transparan) --}}
+                                    <div class="absolute inset-0 opacity-[0.03] dark:opacity-10 text-gray-900 dark:text-white" style="background-image: radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0); background-size: 20px 20px;"></div>
+                                    
+                                    <div class="p-8 relative z-10 flex flex-col h-full justify-center items-center text-center">
+                                        <div class="w-20 h-20 bg-blue-50 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mb-5 border border-blue-100 dark:border-blue-800/50">
+                                            <svg class="w-10 h-10 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                            </svg>
+                                        </div>
+                                        
+                                        <h4 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Riwayat Laporan</h4>
+                                        <p class="text-gray-500 dark:text-gray-400 text-sm mb-8 leading-relaxed">
+                                            Akses seluruh rekam jejak kegiatan PKL Anda yang telah dikirimkan sebelumnya.
+                                        </p>
+                                        
+                                        <a href="{{ route('student.reports.index') }}" 
+                                           class="w-full bg-blue-50 dark:bg-gray-700 text-blue-700 dark:text-blue-400 font-bold py-3.5 px-6 rounded-xl hover:bg-blue-100 dark:hover:bg-gray-600 transition-all duration-200 border border-blue-100 dark:border-gray-600 hover:-translate-y-0.5">
+                                            Lihat Semua Laporan
+                                        </a>
+
+                                        {{-- Statistik sederhana --}}
+                                        @if(isset($reportsCount))
+                                        <div class="w-full mt-8 pt-6 border-t border-gray-100 dark:border-gray-700">
+                                            <div class="flex justify-between items-center px-2">
+                                                <span class="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Laporan Terkirim</span>
+                                                <span class="font-black text-3xl text-gray-900 dark:text-white">{{ $reportsCount }}</span>
+                                            </div>
+                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -266,7 +274,30 @@
         </div>
     </div>
 
-    {{-- STYLE DIKELUARKAN DARI PUSH AGAR DIJAMIN RENDER --}}
+    {{-- SCRIPT JAVASCRIPT UNTUK PREVIEW FOTO --}}
+    <script>
+        function previewDashboardImage(event) {
+            const input = event.target;
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                
+                // Ubah teks menjadi nama file
+                const nameLabel = document.getElementById('filename-dashboard');
+                nameLabel.innerHTML = '<span class="text-green-600 dark:text-green-400 font-bold">✅ File Terpilih: ' + file.name + '</span>';
+                
+                // Proses Live Preview Gambar
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('preview-img-dashboard');
+                    img.src = e.target.result;
+                    img.classList.remove('hidden'); // Munculkan gambarnya
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+
+    {{-- STYLE CSS --}}
     <style>
         .pulse-slow {
             animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;

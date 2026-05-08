@@ -13,30 +13,39 @@ class Report extends Model
      * Kolom-kolom yang boleh diisi secara massal (Mass Assignment)
      */
     protected $fillable = [
-        'user_id',       // Ganti ke 'internship_id' jika tabel Anda pakai relasi ke tabel internships
-        'activity_date', // Pastikan di database namanya memang 'activity_date'
-        'description',   // Pastikan di database namanya 'description'
+        'internship_id', // Kita pakai internship_id, bukan user_id lagi
+        'activity_date',
+        'description',
+        'title',         // Bawaan dari migrasi
+        'file_path',     // Bawaan dari migrasi
         'image_path',
-        'status',        // <--- WAJIB: Harus sama dengan yang kita buat di migrasi tadi
+        'status',
+        'feedback',
+        'reviewed_by',
+        'reviewed_at',
     ];
 
     /**
-     * PERBAIKAN: 
-     * $casts diletakkan di SINI, terpisah dari $fillable.
-     * Ini yang bertugas mengubah teks "2026-03-26" menjadi format Waktu/Tanggal.
+     * Mengubah format data saat diambil dari database
      */
     protected $casts = [
         'activity_date' => 'date',
+        'reviewed_at'   => 'datetime',
     ];
 
-    public function user() {
-        return $this->belongsTo(User::class);
-    }
-    
-    // Opsional: Jika Anda menggunakan internship_id
-    /*
-    public function internship() {
+    /**
+     * Relasi ke tabel internships
+     */
+    public function internship() 
+    {
         return $this->belongsTo(Internship::class);
     }
-    */
+
+    /**
+     * Relasi ke tabel users (Dosen/Admin yang mereview)
+     */
+    public function reviewer() 
+    {
+        return $this->belongsTo(User::class, 'reviewed_by');
+    }
 }

@@ -83,15 +83,24 @@ return new class extends Migration
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
             $table->foreignId('internship_id')->constrained('internships')->onDelete('cascade');
-            $table->string('title');
-            $table->string('file_path');
-            $table->enum('status', ['draft', 'submitted', 'reviewed', 'approved', 'rejected'])->default('draft');
+            
+            // --- KOLOM TAMBAHAN UNTUK LOGBOOK HARIAN ---
+            $table->date('activity_date')->nullable();
+            $table->text('description')->nullable();
+            $table->string('image_path')->nullable();
+            
+            // --- KOLOM BAWAAN LAMA ---
+            $table->string('title')->nullable();
+            $table->string('file_path')->nullable();
+            
+            // Tambahkan opsi 'pending' ke dalam enum status
+            $table->enum('status', ['pending', 'draft', 'submitted', 'reviewed', 'approved', 'rejected'])->default('pending');
             $table->text('feedback')->nullable();
             $table->foreignId('reviewed_by')->nullable()->constrained('users');
             $table->timestamp('reviewed_at')->nullable();
             $table->timestamps();
         });
-
+        
         // 6. Create scores table
         Schema::create('scores', function (Blueprint $table) {
             $table->id();

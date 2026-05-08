@@ -36,20 +36,29 @@ class DashboardController extends Controller
     }
 
     // Halaman Detail untuk Memantau 1 Siswa
-   public function monitor($id)
+  public function monitor($id)
     {
-        // 1. Cari Data Magang berdasarkan ID Lamaran (Primary Key)
-        // Kita pakai findOrFail($id) karena yang dikirim dari dashboard adalah ID Lamaran
-        $internship = \App\Models\InternshipApplication::with('user')
-                        ->findOrFail($id); 
+        // 1. Cari data pendaftaran PKL berdasarkan ID
+        $internship = \App\Models\InternshipApplication::with('user')->findOrFail($id);
 
-        // 2. Cari Laporan Siswa Tersebut
-        // Karena laporan disimpan per User, kita ambil user_id dari data internship di atas
-        $reports = \App\Models\Report::where('user_id', $internship->user_id)
-                        ->orderBy('activity_date', 'desc')
-                        ->get();
+        // 2. Kunci Keamanan Dosen (SAYA MATIKAN SEMENTARA UNTUK TESTING)
+        /*
+        if ($internship->advisor_id !== auth()->id()) {
+            abort(403, 'Akses ditolak. Anda bukan Dosen Pembimbing untuk siswa ini.');
+        }
+        */
 
-        // 3. Kirim data ke View
+        // 3. Kita butuh ID Internship resmi untuk mencari laporannya
+        $activeInternship = \App\Models\Internship::where('student_id', $internship->user_id)->first();
+
+        // 4. Cari laporan menggunakan 'internship_id'
+        $reports = collect();
+        if ($activeInternship) {
+            $reports = \App\Models\Report::where('internship_id', $activeInternship->id)
+                                         ->orderBy('activity_date', 'desc')
+                                         ->get();
+        }
+
         return view('advisor.monitoring', compact('internship', 'reports'));
     }
 }

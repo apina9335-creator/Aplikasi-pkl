@@ -7,31 +7,34 @@ use App\Models\Report;
 use App\Models\Internship;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage; // WAJIB ADA untuk hapus foto
+use Illuminate\Support\Facades\Storage; 
 
 class ReportController extends Controller
 {
     // 1. INDEX: Menampilkan Daftar
     public function index()
     {
-        $reports = Report::where('user_id', Auth::id())
-                         ->orderBy('activity_date', 'desc')
-                         ->get();
-                         
+        // Cari data PKL mahasiswa yang sedang login
+        $internship = Internship::where('student_id', Auth::id())->first();
+
+        // Jika ada data PKL, ambil laporannya berdasarkan internship_id
+        $reports = $internship 
+            ? Report::where('internship_id', $internship->id)->orderBy('activity_date', 'desc')->get() 
+            : collect(); // Jika belum daftar PKL, kembalikan array kosong
+                             
         return view('student.reports.index', compact('reports'));
     }
 
     // 2. CREATE: Menampilkan Form
     public function create()
     {
-        // Cek apakah punya akses magang (Gunakan 'student_id' sesuai DB Anda)
         $internship = Internship::where('student_id', Auth::id())->first();
 
-        // KODE PENGAMAN (Aktifkan jika sistem sudah rilis)
-        // if (!$internship || $internship->status !== 'approved') {
-        //      return redirect()->route('student.reports.index')
-        //         ->with('error', 'Maaf, Anda harus berstatus "Approved" untuk mengisi laporan.');
-        // }
+        // Cegah mahasiswa yang belum daftar PKL untuk membuat laporan
+        if (!$internship) {
+            return redirect()->route('student.dashboard')
+                ->with('error', 'Maaf, Anda belum memiliki data PKL.');
+        }
 
         return view('student.reports.create');
     }
@@ -45,17 +48,28 @@ class ReportController extends Controller
             'photo'         => 'nullable|image|max:2048', 
         ]);
 
+        $internship = Internship::where('student_id', Auth::id())->first();
+
+        if (!$internship) {
+            return back()->with('error', 'Gagal menyimpan. Data pendaftaran PKL Anda tidak ditemukan.');
+        }
+
         $imagePath = null;
         if ($request->hasFile('photo')) {
             $imagePath = $request->file('photo')->store('reports', 'public');
         }
 
+        // PERBAIKAN: Gunakan internship_id (bukan user_id)
         Report::create([
-            'user_id'       => Auth::id(),
+            'internship_id' => $internship->id, 
             'activity_date' => $request->activity_date,
             'description'   => $request->description,
             'image_path'    => $imagePath,
             'status'        => 'pending',
+            
+            // Kolom bawaan wajib dari migrasi, kita isi nilai default
+            'title'         => 'Laporan ' . \Carbon\Carbon::parse($request->activity_date)->format('d-M-Y'), 
+            'file_path'     => '-', 
         ]);
 
         return redirect()->route('student.reports.index')->with('success', 'Laporan berhasil disimpan!');
@@ -64,9 +78,12 @@ class ReportController extends Controller
     // 4. EDIT: Menampilkan Form Edit
     public function edit($id)
     {
-        $report = Report::where('user_id', Auth::id())->findOrFail($id);
+        $internship = Internship::where('student_id', Auth::id())->firstOrFail();
         
-        // Opsional: Cegah edit jika sudah disetujui
+        // Cari laporan berdasarkan internship_id
+        $report = Report::where('internship_id', $internship->id)->findOrFail($id);
+        
+        // Cegah edit jika sudah disetujui
         if ($report->status == 'approved') {
             return back()->with('error', 'Laporan yang sudah disetujui dosen tidak bisa diedit.');
         }
@@ -77,7 +94,8 @@ class ReportController extends Controller
     // 5. UPDATE: Menyimpan Perubahan
     public function update(Request $request, $id)
     {
-        $report = Report::where('user_id', Auth::id())->findOrFail($id);
+        $internship = Internship::where('student_id', Auth::id())->firstOrFail();
+        $report = Report::where('internship_id', $internship->id)->findOrFail($id);
 
         $request->validate([
             'activity_date' => 'required|date',
@@ -97,6 +115,10 @@ class ReportController extends Controller
 
         $report->activity_date = $request->activity_date;
         $report->description   = $request->description;
+        
+        // Update title agar sesuai tanggal baru
+        $report->title = 'Laporan ' . \Carbon\Carbon::parse($request->activity_date)->format('d-M-Y');
+        
         $report->save();
 
         return redirect()->route('student.reports.index')->with('success', 'Laporan berhasil diperbarui!');
@@ -105,7 +127,8 @@ class ReportController extends Controller
     // 6. DESTROY: Menghapus Laporan
     public function destroy($id)
     {
-        $report = Report::where('user_id', Auth::id())->findOrFail($id);
+        $internship = Internship::where('student_id', Auth::id())->firstOrFail();
+        $report = Report::where('internship_id', $internship->id)->findOrFail($id);
 
         if ($report->status == 'approved') {
             return back()->with('error', 'Laporan yang sudah disetujui tidak bisa dihapus.');

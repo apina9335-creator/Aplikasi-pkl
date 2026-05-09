@@ -12,19 +12,19 @@ class Report extends Model
     /**
      * Kolom-kolom yang boleh diisi secara massal (Mass Assignment)
      */
-    protected $fillable = [
-        'internship_id', // Kita pakai internship_id, bukan user_id lagi
+   protected $fillable = [
+        'internship_id',
+        'application_id', // <--- TAMBAHKAN BARIS INI
         'activity_date',
         'description',
-        'title',         // Bawaan dari migrasi
-        'file_path',     // Bawaan dari migrasi
+        'title',
+        'file_path',
         'image_path',
         'status',
         'feedback',
         'reviewed_by',
         'reviewed_at',
     ];
-
     /**
      * Mengubah format data saat diambil dari database
      */

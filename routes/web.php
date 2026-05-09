@@ -23,6 +23,14 @@ use App\Http\Controllers\Advisor\StudentActivityController;
 |--------------------------------------------------------------------------
 */
 
+// Rute Pendaftaran Publik (Tanpa Login)
+Route::get('/daftar-pkl', [App\Http\Controllers\PublicRegistrationController::class, 'index'])->name('public.register');
+Route::post('/daftar-pkl', [App\Http\Controllers\PublicRegistrationController::class, 'store'])->name('public.register.store');
+
+// Rute Cek Token (Halaman Sukses)
+Route::get('/pendaftaran-berhasil/{token}', [App\Http\Controllers\PublicRegistrationController::class, 'success'])->name('public.register.success');
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -120,3 +128,8 @@ Route::middleware('auth')->group(function () {
 }); // End of Auth Middleware
 
 require __DIR__.'/auth.php';
+
+// Rute Akses Token (Logbook & Monitoring)
+Route::get('/akses-logbook', [App\Http\Controllers\TokenAccessController::class, 'logbook'])->name('token.logbook');
+Route::post('/akses-logbook', [App\Http\Controllers\TokenAccessController::class, 'storeLogbook'])->name('token.logbook.store');
+Route::get('/monitoring-siswa', [App\Http\Controllers\TokenAccessController::class, 'monitor'])->name('token.monitor');

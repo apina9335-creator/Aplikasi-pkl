@@ -6,22 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class InternshipApplication extends Model
 {
-    protected $fillable = [
-        'user_id',
-        'school',      // <--- Tambahan Baru
-        'start_date',  // <--- Tambahan Baru
-        'end_date',
-        'company_id',
-        'status',
+   protected $fillable = [
+        'token',
+        'name',
+        'email',
+        'school',
+        'registration_type',
+        'group_members',
         'motivation',
+        'status',
+        'user_id',
+        'company_id',
         'attachment_path',
-        'applied_at',
-        'approved_at',
-        'approved_by',
-        'rejection_reason',
-        'cv_path',
-        'registration_type', // <--- DITAMBAHKAN INI AGAR DATA KELOMPOK BISA MASUK
-        'group_members',     // <--- DITAMBAHKAN INI AGAR NAMA TEMAN BISA MASUK
+        'rejection_reason'
     ];
 
     protected $casts = [

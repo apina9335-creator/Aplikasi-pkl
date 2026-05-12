@@ -1,89 +1,80 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-100 leading-tight">
+            {{ __('Daftar Permohonan PKL') }}
+        </h2>
+    </x-slot>
 
-@section('content')
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
-    <div class="max-w-6xl mx-auto">
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Persetujuan Aplikasi PKL</h1>
-            <p class="text-gray-600 dark:text-gray-400 mt-2">Kelola pendaftaran PKL dari mahasiswa</p>
-        </div>
+    <div class="py-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900 dark:text-gray-100">
+                    
+                    @if(session('success'))
+                        <div class="mb-4 px-4 py-3 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                    @if(session('error'))
+                        <div class="mb-4 px-4 py-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                            {{ session('error') }}
+                        </div>
+                    @endif
 
-        @if (session('success'))
-            <div class="mb-6 p-4 bg-green-100 dark:bg-green-900/40 border border-green-400 dark:border-green-800 text-green-700 dark:text-green-300 rounded">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        <div class="mb-6 flex gap-2">
-            <a href="{{ route('admin.internship-applications.index') }}" 
-               class="px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white rounded hover:bg-blue-600 dark:hover:bg-blue-700 transition">
-                Semua
-            </a>
-        </div>
-
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-200 dark:border-gray-700 transition-colors duration-300">
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gray-100 dark:bg-gray-700/50 border-b dark:border-gray-700">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-200">Mahasiswa</th>
-                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-200">Perusahaan</th>
-                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-200">Status</th>
-                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-200">Diajukan</th>
-                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-200">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @forelse ($applications as $app)
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
-                                <td class="px-6 py-4">
-                                    <div>
-                                        <p class="font-medium text-gray-900 dark:text-white">{{ $app->user->name }}</p>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">{{ $app->user->email }}</p>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-gray-900 dark:text-gray-300">{{ $app->company->name }}</td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-block px-3 py-1 text-sm font-medium rounded-full border
-                                        @if ($app->status === 'pending')
-                                            bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800/50
-                                        @elseif ($app->status === 'approved')
-                                            bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 border-green-200 dark:border-green-800/50
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs uppercase bg-gray-50 dark:bg-gray-700 border-b dark:border-gray-600">
+                                <tr>
+                                    <th class="px-4 py-3">Tgl Daftar</th>
+                                    <th class="px-4 py-3">Nama & Email</th>
+                                    <th class="px-4 py-3">Asal Sekolah</th>
+                                    <th class="px-4 py-3">Tipe</th>
+                                    <th class="px-4 py-3 text-center">Status</th>
+                                    <th class="px-4 py-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($applications as $app)
+                                <tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                                    <td class="px-4 py-4">{{ $app->created_at->format('d M Y') }}</td>
+                                    
+                                    {{-- PERBAIKAN: Ambil nama & email langsung dari tabel aplikasi --}}
+                                    <td class="px-4 py-4">
+                                        <div class="font-bold text-gray-800 dark:text-gray-100">{{ $app->name ?? 'Tanpa Nama' }}</div>
+                                        <div class="text-xs text-gray-500">{{ $app->email ?? '-' }}</div>
+                                    </td>
+                                    
+                                    <td class="px-4 py-4">{{ $app->school ?? '-' }}</td>
+                                    <td class="px-4 py-4 uppercase text-xs font-semibold">{{ $app->registration_type }}</td>
+                                    
+                                    <td class="px-4 py-4 text-center">
+                                        @if($app->status === 'pending')
+                                            <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-bold">Menunggu</span>
+                                        @elseif($app->status === 'approved')
+                                            <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-bold">Disetujui</span>
                                         @else
-                                            bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300 border-red-200 dark:border-red-800/50
+                                            <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-xs font-bold">Ditolak</span>
                                         @endif
-                                    ">
-                                        {{ ucfirst($app->status) }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
-                                    {{ $app->applied_at?->format('d M Y') ?? '-' }}
-                                </td>
-                                <td class="px-6 py-4">
-                                    <a href="{{ route('admin.internship-applications.show', $app) }}" 
-                                       class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors">
-                                        Lihat
-                                    </a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="px-6 py-12 text-center text-gray-600 dark:text-gray-400">
-                                    <svg class="w-12 h-12 mx-auto mb-3 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                    </svg>
-                                    Tidak ada aplikasi PKL
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                                    </td>
+                                    <td class="px-4 py-4 text-center">
+                                        <a href="{{ route('admin.internship-applications.show', $app->id) }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow transition-all">Detail</a>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="6" class="px-4 py-8 text-center text-gray-500">Belum ada permohonan PKL yang masuk.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-4">
+                        {{ $applications->links() }}
+                    </div>
 
-        <div class="mt-8">
-            {{ $applications->links() }}
+                </div>
+            </div>
         </div>
     </div>
-</div>
-@endsection
+</x-app-layout>

@@ -1,132 +1,223 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SIPKL - Sistem Informasi PKL</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+        <meta name="title" content="SIPKL - Sistem Informasi PKL"/>
+        <meta name="description" content="Platform pendaftaran PKL otomatis tanpa ribet login. Dapatkan Token akses Anda dan mulai petualangan magang hari ini!">
+
+        <title>SIPKL | Home</title>
+
+        {{-- Menggunakan CSS Bootstrap dari sumber Global Intermedia seperti permintaan --}}
+        <link rel="stylesheet" type="text/css" href="//gi.co.id/dist/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="//gi.co.id/dist/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="//gi.co.id/dist/fonts/animate/animate.min.css">
+        <link rel="stylesheet" type="text/css" href="//gi.co.id/dist/css/style.css?version=1">
+
+        {{-- Tambahan CSS khusus untuk Modal SIPKL --}}
+        <style>
+            .sipkl-modal {
+                display: none; 
+                position: fixed; 
+                z-index: 9999; 
+                left: 0; top: 0; 
+                width: 100%; height: 100%; 
+                overflow: auto; 
+                background-color: rgba(0,0,0,0.8);
+            }
+            .sipkl-modal-content {
+                background-color: #fff;
+                margin: 10% auto;
+                padding: 30px;
+                border-radius: 10px;
+                width: 90%;
+                max-width: 450px;
+                text-align: center;
+                position: relative;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            }
+            .sipkl-close {
+                color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;
+                position: absolute; top: 10px; right: 15px;
+            }
+            .sipkl-close:hover { color: #000; }
+            .sipkl-input {
+                width: 100%; padding: 12px; margin: 20px 0; border: 2px solid #ddd; 
+                border-radius: 5px; font-size: 1.2em; text-align: center; text-transform: uppercase;
+                letter-spacing: 2px;
+            }
+            .sipkl-btn {
+                background-color: #004a8c; color: white; border: none; padding: 12px 25px; 
+                font-size: 1.1em; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold;
+            }
+            .sipkl-btn:hover { background-color: #003666; }
+            
+            /* Penyesuaian agar logo SIPKL terlihat bagus di navbar GI */
+            #logo span { font-size: 24px; font-weight: bold; color: #004a8c; margin-top: 10px; display: inline-block;}
+            #logo span span { color: #f26522; }
+            
+            .alert-container { padding: 20px; text-align: center; }
+        </style>
 </head>
-<body class="antialiased bg-slate-50 dark:bg-gray-900 min-h-screen flex flex-col transition-colors duration-300">
-    
-    {{-- Alert Pesan Error --}}
-    @if(session('error'))
-        <div class="fixed top-5 left-1/2 -translate-x-1/2 z-[100] bg-red-600 text-white px-6 py-3 rounded-full shadow-lg font-bold">
-            ⚠️ {{ session('error') }}
-        </div>
-    @endif
-
-    {{-- Navbar --}}
-    <nav class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100 dark:border-gray-700">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
-                    <span class="text-white font-bold text-xl">S</span>
+<body>
+        {{-- HEADER & NAVIGATION --}}
+        <header id="header">
+                <div class="container-fluid">
+                        <div id="logo" class="pull-left">
+                                <a href="{{ url('/') }}">
+                                    <span>SI<span>PKL</span></span>
+                                </a>
+                        </div>
+                        <nav id="nav-menu-container">
+                                <ul class="nav-menu" alt="#mn_index">
+                                        <li id="mn_index" class="menu-active"><a href="{{ url('/') }}">Home</a></li>
+                                        <li id="mn_daftar"><a href="{{ route('public.register') }}">Daftar PKL Baru</a></li>
+                                        <li id="mn_logbook"><a href="javascript:void(0)" onclick="document.getElementById('modal-laporan').style.display='block'">Isi Laporan Harian</a></li>
+                                        <li id="mn_monitor"><a href="javascript:void(0)" onclick="document.getElementById('modal-monitor').style.display='block'">Monitoring Siswa</a></li>
+                                        <li id="mn_admin"><a href="{{ route('login') }}">Login Admin Panel</a></li>
+                                </ul>
+                        </nav>
                 </div>
-                <span class="font-black text-xl tracking-tighter text-slate-800 dark:text-white">SIPKL</span>
-            </div>
-            <a href="{{ route('login') }}" class="text-sm font-bold text-gray-500 hover:text-blue-600 dark:text-gray-400 transition-colors">Login Admin</a>
-        </div>
-    </nav>
+        </header>
 
-    {{-- Content --}}
-    <main class="flex-grow flex items-center justify-center py-12 px-4 relative overflow-hidden">
-        {{-- Animated Background Ornaments --}}
-        <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
-            <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-400/20 rounded-full blur-3xl animate-pulse"></div>
-            <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        </div>
+        {{-- CAROUSEL SLIDER --}}
+        <section id="intro">
+                <div class="intro-container">
+                        <div id="introCarousel" class="carousel slide carousel-fade" data-ride="carousel">
+                        <ol class="carousel-indicators">
+                                <li data-target="#introCarousel" data-slide-to="0" class="active"></li>
+                                <li data-target="#introCarousel" data-slide-to="1" class=""></li>
+                        </ol>
+                        <div class="carousel-inner" role="listbox">
+                                <div class="carousel-item active">
+                                        <img src="//gi.co.id/dist/images/intro-carousel/slide_1.jpg" class="img-responsive" alt="">
+                                        <div class="carousel-container">
+                                                <div class="carousel-content">&nbsp;</div>
+                                        </div>
+                                </div>
+                                <div class="carousel-item">
+                                        <img src="//gi.co.id/dist/images/intro-carousel/slide_2.jpg" class="img-responsive" alt="">
+                                        <div class="carousel-container">
+                                                <div class="carousel-content">&nbsp;</div>
+                                        </div>
+                                </div>
+                        </div>
 
-        <div class="max-w-6xl mx-auto w-full relative z-10">
-            <div class="text-center mb-16">
-                <h1 class="text-5xl md:text-6xl font-black text-slate-900 dark:text-white mb-6 tracking-tight">
-                    Magang Lebih <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">Mudah & Terpantau</span>
-                </h1>
-                <p class="text-lg text-slate-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed font-medium">
-                    Platform pendaftaran PKL otomatis tanpa ribet login. Dapatkan Token akses Anda dan mulai petualangan magang hari ini!
-                </p>
-            </div>
+                        <a class="carousel-control-prev" href="#introCarousel" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon ion-chevron-left" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#introCarousel" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon ion-chevron-right" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                </div>
+        </section>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <main id="main">
                 
-                {{-- 1. Tombol Daftar PKL --}}
-                <a href="{{ route('public.register') }}" class="group bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-2 transition-all duration-300 text-center">
-                    <div class="w-16 h-16 mx-auto bg-blue-50 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-blue-600 transition-all duration-300">
-                        <svg class="w-8 h-8 text-blue-600 dark:text-blue-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                {{-- TAMPILAN ERROR/SUCCESS --}}
+                @if(session('error'))
+                    <div class="alert-container">
+                        <div class="alert alert-danger" style="display:inline-block; margin-top:20px;">
+                            <strong>Perhatian!</strong> {{ session('error') }}
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Daftar PKL</h3>
-                    <p class="text-sm text-slate-500 dark:text-gray-400 leading-relaxed">Mulai perjalanan PKL Anda dengan mengisi formulir singkat di sini.</p>
-                </a>
-
-                {{-- 2. Logbook Harian --}}
-                <div onclick="document.getElementById('modal-token-laporan').classList.remove('hidden')" class="group bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-2xl hover:shadow-emerald-500/10 hover:-translate-y-2 transition-all duration-300 text-center cursor-pointer">
-                    <div class="w-16 h-16 mx-auto bg-emerald-50 dark:bg-emerald-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-emerald-600 transition-all duration-300">
-                        <svg class="w-8 h-8 text-emerald-600 dark:text-emerald-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Isi Laporan</h3>
-                    <p class="text-sm text-slate-500 dark:text-gray-400 leading-relaxed">Input kegiatan harian menggunakan Token rahasia yang Anda miliki.</p>
-                </div>
-
-                {{-- 3. Monitoring --}}
-                <div onclick="document.getElementById('modal-token-monitor').classList.remove('hidden')" class="group bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-2xl hover:shadow-purple-500/10 hover:-translate-y-2 transition-all duration-300 text-center cursor-pointer">
-                    <div class="w-16 h-16 mx-auto bg-purple-50 dark:bg-purple-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-purple-600 transition-all duration-300">
-                        <svg class="w-8 h-8 text-purple-600 dark:text-purple-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Monitoring</h3>
-                    <p class="text-sm text-slate-500 dark:text-gray-400 leading-relaxed">Guru/Pembimbing memantau kegiatan siswa melalui Token unik.</p>
-                </div>
-
-                {{-- 4. Admin --}}
-                <a href="{{ route('login') }}" class="group bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-2xl hover:shadow-slate-500/10 hover:-translate-y-2 transition-all duration-300 text-center">
-                    <div class="w-16 h-16 mx-auto bg-slate-100 dark:bg-gray-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-slate-900 dark:group-hover:bg-white transition-all duration-300">
-                        <svg class="w-8 h-8 text-slate-600 dark:text-slate-400 group-hover:text-white dark:group-hover:text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Admin Panel</h3>
-                    <p class="text-sm text-slate-500 dark:text-gray-400 leading-relaxed">Pengelolaan data, akun, dan validasi pendaftaran sistem.</p>
-                </a>
-
-            </div>
-        </div>
-    </main>
-
-    {{-- Footer --}}
-    <footer class="py-8 text-center text-sm text-slate-400 dark:text-gray-600 font-medium">
-        &copy; {{ date('Y') }} SIPKL Application. All rights reserved.
-    </footer>
-
-    {{-- MODAL TOKEN LAPORAN (Sudah Diarahkan ke Route yang Benar) --}}
-    <div id="modal-token-laporan" class="fixed inset-0 z-50 hidden">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="this.parentElement.classList.add('hidden')"></div>
-        <div class="relative flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-gray-100 dark:border-gray-700">
-                <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Akses Logbook</h3>
-                <p class="text-sm text-slate-500 dark:text-gray-400 mb-6">Masukkan Token yang Anda dapatkan setelah pendaftaran.</p>
+                @endif
                 
-                {{-- Form action diubah ke route('token.logbook') --}}
+                {{-- FEATURED TEXT --}}
+                <section id="featured-services">
+                        <div class="container">
+                                <div class="row">
+                                        <div class="col-md-12 box wow fadeInUp" data-wow-delay="0s" data-wow-duration="4.5s">
+                                                <label class="featured_big_small">Memudahkan Pengelolaan Magang & Praktik Kerja Lapangan</label><br>
+                                                <label class="featured_big_label">Melalui Sistem Informasi Terintegrasi</label>
+                                        </div>
+                                </div>
+                        </div>
+            </section>
+
+            {{-- DUA KOLOM INFORMASI --}}
+            <section>
+                <div class="container-fluid">
+                                <div class="row">
+                                        <div class="col-md-6 bg_index_kiri">
+                                                <div class="col-md-9 col-md-offset-3 pull-right">
+                                                        <label class="text_index_big wow fadeInLeft" data-wow-delay="0s" data-wow-duration="2.5s" style="color:#383838;">Apakah Anda Siswa atau Mahasiswa yang ingin mendaftar PKL?</label><br>
+                                                        <label class="text_index_sml wow fadeInLeft" data-wow-delay="0.5s" data-wow-duration="3.5s" style="color:#383838;">Mulai perjalanan PKL Anda dengan mengisi formulir singkat di sini. Setelah disetujui, Anda akan mendapatkan Token untuk mengisi Logbook Harian.</label><br>
+                                                        <a class="btn" style="background-color: #f26522; color:white; padding:10px 20px; font-weight:bold; margin-top:10px; border-radius:20px;" href="{{ route('public.register') }}">Daftar Sekarang &raquo;</a>
+                                                </div>
+                                        </div>
+                                        <div class="col-md-6 bg_index_kanan">
+                                                <div class="col-md-9 col-md-offset-3 pull-left" data-wow-delay="0s" data-wow-duration="2.5s">
+                                                        <label class="text_index_big wow fadeInRight" data-wow-delay="0s" data-wow-duration="2.5s" style="color:#FFFFFF;">Apakah Anda Dosen atau Guru Pembimbing?</label><br>
+                                                        <label class="text_index_sml wow fadeInRight" data-wow-delay="0.5s" data-wow-duration="3.5s" style="color:#FFFFFF;">Gunakan fasilitas Monitoring Siswa untuk memantau aktivitas harian dan progres laporan dari siswa yang sedang melaksanakan magang.</label><br>
+                                                        <button class="btn" style="background-color: #fff; color:#004a8c; padding:10px 20px; font-weight:bold; margin-top:10px; border-radius:20px;" onclick="document.getElementById('modal-monitor').style.display='block'">Pantau Siswa &raquo;</button>
+                                                </div>
+                                        </div>
+                                </div>
+                        </div>
+            </section>
+
+        </main>
+
+        {{-- FOOTER --}}
+        <footer id="footer">
+                <div class="footer-bottom" style="background-color: #000; padding: 20px 0; text-align: center; color: white;">
+                        <div class="container">
+                                <div class="copyright">
+                                  Hak Cipta © {{ date('Y') }}&nbsp;<strong>Sistem Informasi PKL</strong>. Adaptasi Tema Global Intermedia.
+                                </div>
+                        </div>
+                </div>
+        </footer>
+
+        {{-- MODAL LOGBOOK --}}
+        <div id="modal-laporan" class="sipkl-modal">
+            <div class="sipkl-modal-content">
+                <span class="sipkl-close" onclick="document.getElementById('modal-laporan').style.display='none'">&times;</span>
+                <h3 style="color:#004a8c; font-weight:bold; margin-bottom:10px;">Akses Logbook Harian</h3>
+                <p style="color:#666;">Masukkan Token rahasia yang Anda terima dari Email setelah pendaftaran disetujui.</p>
                 <form action="{{ route('token.logbook') }}" method="GET">
-                    <input type="text" name="token" placeholder="CONTOH: PKL-XXXXXX" class="w-full px-4 py-4 rounded-2xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-center font-black tracking-widest text-xl mb-4 focus:ring-4 focus:ring-emerald-500/20 outline-none uppercase dark:text-white transition-all" required>
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-emerald-500/30 transition-all">Masuk Sekarang</button>
+                    <input type="text" name="token" class="sipkl-input" placeholder="CONTOH: PKL-XXXXXX" required>
+                    <button type="submit" class="sipkl-btn">Buka Logbook Saya</button>
                 </form>
             </div>
         </div>
-    </div>
 
-    {{-- MODAL TOKEN MONITORING (Sudah Diarahkan ke Route yang Benar) --}}
-    <div id="modal-token-monitor" class="fixed inset-0 z-50 hidden">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="this.parentElement.classList.add('hidden')"></div>
-        <div class="relative flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-gray-100 dark:border-gray-700">
-                <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Monitoring Siswa</h3>
-                <p class="text-sm text-slate-500 dark:text-gray-400 mb-6">Gunakan Token siswa untuk memantau laporan.</p>
-                
-                {{-- Form action diubah ke route('token.monitor') --}}
+        {{-- MODAL MONITORING --}}
+        <div id="modal-monitor" class="sipkl-modal">
+            <div class="sipkl-modal-content">
+                <span class="sipkl-close" onclick="document.getElementById('modal-monitor').style.display='none'">&times;</span>
+                <h3 style="color:#f26522; font-weight:bold; margin-bottom:10px;">Monitoring Siswa</h3>
+                <p style="color:#666;">Gunakan Token siswa untuk memantau rekam aktivitas dan laporan magang mereka.</p>
                 <form action="{{ route('token.monitor') }}" method="GET">
-                    <input type="text" name="token" placeholder="CONTOH: PKL-XXXXXX" class="w-full px-4 py-4 rounded-2xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-center font-black tracking-widest text-xl mb-4 focus:ring-4 focus:ring-purple-500/20 outline-none uppercase dark:text-white transition-all" required>
-                    <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-purple-500/30 transition-all">Pantau Siswa</button>
+                    <input type="text" name="token" class="sipkl-input" placeholder="CONTOH: PKL-XXXXXX" required>
+                    <button type="submit" class="sipkl-btn" style="background-color:#f26522;">Pantau Siswa</button>
                 </form>
             </div>
         </div>
-    </div>
 
+        <script src="//gi.co.id/dist/js/jquery/jquery-3.2.1.min.js" type="text/javascript"></script>
+        <script src="//gi.co.id/dist/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="//gi.co.id/dist/fonts/wow/wow.min.js"></script>
+        <script src="//gi.co.id/dist/js/main.js"></script>
+        
+        {{-- SCRIPT UNTUK MODAL & NAVBAR --}}
+        <script type="text/javascript">
+            // Script untuk menutup modal jika klik di luar kotak
+            window.onclick = function(event) {
+                if (event.target == document.getElementById('modal-laporan')) {
+                    document.getElementById('modal-laporan').style.display = "none";
+                }
+                if (event.target == document.getElementById('modal-monitor')) {
+                    document.getElementById('modal-monitor').style.display = "none";
+                }
+            }
+
+            // Inisialisasi animasi wow.js
+            new WOW().init();
+        </script>
 </body>
 </html>

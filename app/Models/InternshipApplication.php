@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class InternshipApplication extends Model
 {
-   protected $fillable = [
+    protected $fillable = [
         'token',
         'name',
         'email',
@@ -18,7 +18,10 @@ class InternshipApplication extends Model
         'user_id',
         'company_id',
         'attachment_path',
-        'rejection_reason'
+        'rejection_reason',  // <--- Tambah koma di sini
+        'start_date',        // <--- Tambah koma di sini
+        'end_date',
+        'phone',
     ];
 
     protected $casts = [

@@ -30,7 +30,6 @@ Route::post('/daftar-pkl', [App\Http\Controllers\PublicRegistrationController::c
 // Rute Cek Token (Halaman Sukses)
 Route::get('/pendaftaran-berhasil/{token}', [App\Http\Controllers\PublicRegistrationController::class, 'success'])->name('public.register.success');
 
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -69,7 +68,7 @@ Route::middleware('auth')->group(function () {
             
             // Export Excel (LAMARAN & SISWA)
             Route::get('/applications/export', [AdminDashboard::class, 'exportExcel'])->name('applications.export');
-            Route::get('/students/export', [AdminStudentController::class, 'exportExcel'])->name('students.export'); // <-- INI YANG BARU KITA TAMBAHKAN!
+            Route::get('/students/export', [AdminStudentController::class, 'exportExcel'])->name('students.export');
             
             // CRUD Data Siswa
             Route::resource('students', AdminStudentController::class);
@@ -79,6 +78,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/internship-applications/{internshipApplication}', [AdminInternshipAppController::class, 'show'])->name('internship-applications.show');
             Route::post('/internship-applications/{internshipApplication}/approve', [AdminInternshipAppController::class, 'approve'])->name('internship-applications.approve');
             Route::post('/internship-applications/{internshipApplication}/reject', [AdminInternshipAppController::class, 'reject'])->name('internship-applications.reject');
+            
+            // 👇 INI YANG BARU KITA TAMBAHKAN 👇 (Rute untuk Menghapus)
+            Route::delete('/internship-applications/{internshipApplication}', [AdminInternshipAppController::class, 'destroy'])->name('internship-applications.destroy');
         });
 
 

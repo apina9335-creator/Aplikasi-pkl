@@ -1,159 +1,176 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-                <nav class="flex text-sm text-gray-500 mb-1" aria-label="Breadcrumb">
-                    <ol class="flex items-center space-x-2">
-                        <li><a href="{{ route('admin.dashboard') }}" class="hover:text-blue-600">Dashboard</a></li>
-                        <li><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"/></svg></li>
-                        <li><a href="{{ route('admin.internship-applications.index') }}" class="hover:text-blue-600">Permohonan</a></li>
-                    </ol>
-                </nav>
-                <h2 class="font-black text-2xl text-gray-800 dark:text-gray-100 leading-tight">
-                    {{ __('Detail Pendaftaran') }}
-                </h2>
-            </div>
-            <a href="{{ route('admin.internship-applications.index') }}" class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl font-bold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">
-                &larr; Kembali
-            </a>
-        </div>
-    </x-slot>
-
-    <div class="py-8">
-        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
+    <div class="min-h-screen bg-zinc-950 text-slate-100 py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-6xl mx-auto">
             
-            {{-- Alert --}}
-            @if(session('success'))
-                <div class="mb-6 flex items-center p-4 text-emerald-800 border-t-4 border-emerald-500 bg-emerald-50 dark:bg-gray-800 dark:text-emerald-400 rounded-lg shadow-sm" role="alert">
-                    <svg class="flex-shrink-0 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                    <div class="ml-3 text-sm font-bold">{{ session('success') }}</div>
+            {{-- Header & Tombol Kembali --}}
+            <div class="mb-8 flex items-center justify-between">
+                <div>
+                    <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest mb-1">Dashboard &gt; Permohonan</p>
+                    <h2 class="text-3xl font-black text-white tracking-tight">Detail Pendaftaran</h2>
                 </div>
-            @endif
+                <a href="{{ route('admin.internship-applications.index') }}" class="px-5 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-xs font-bold text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    KEMBALI
+                </a>
+            </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
-                {{-- KOLOM KIRI: INFO UTAMA & TOKEN --}}
-                <div class="lg:col-span-1 space-y-8">
-                    {{-- Card Profil --}}
-                    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 text-center">
-                        <div class="w-24 h-24 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-3xl mx-auto mb-4 flex items-center justify-center text-white text-3xl font-black shadow-xl shadow-blue-500/20">
+                {{-- KIRI: KARTU PROFIL & TOKEN --}}
+                <div class="lg:col-span-4 space-y-6">
+                    {{-- Profil Card --}}
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-[2rem] p-8 flex flex-col items-center text-center shadow-2xl">
+                        <div class="w-24 h-24 bg-blue-600 rounded-3xl flex items-center justify-center text-4xl font-black text-white shadow-[0_0_20px_rgba(37,99,235,0.4)] mb-6">
                             {{ substr($internshipApplication->name, 0, 1) }}
                         </div>
-                        <h3 class="text-xl font-black text-gray-900 dark:text-white mb-1">{{ $internshipApplication->name }}</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{{ $internshipApplication->email }}</p>
+                        <h3 class="text-xl font-black text-white">{{ $internshipApplication->name }}</h3>
+                        <p class="text-sm text-zinc-400 font-medium mb-5">{{ $internshipApplication->email }}</p>
                         
-                        <div class="inline-block">
-                            @if($internshipApplication->status === 'pending')
-                                <span class="px-4 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-black uppercase tracking-wider">Menunggu Review</span>
-                            @elseif($internshipApplication->status === 'approved')
-                                <span class="px-4 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-black uppercase tracking-wider">Disetujui</span>
-                            @else
-                                <span class="px-4 py-1 bg-red-100 text-red-700 rounded-full text-xs font-black uppercase tracking-wider">Ditolak</span>
-                            @endif
-                        </div>
+                        @if($internshipApplication->status == 'pending')
+                            <span class="bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">Menunggu Review</span>
+                        @elseif($internshipApplication->status == 'approved')
+                            <span class="bg-green-500/10 text-green-500 border border-green-500/20 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">Disetujui</span>
+                        @else
+                            <span class="bg-red-500/10 text-red-500 border border-red-500/20 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">Ditolak</span>
+                        @endif
                     </div>
 
-                    {{-- Card Token --}}
-                    <div class="bg-blue-600 rounded-3xl p-6 text-white shadow-xl shadow-blue-500/30 relative overflow-hidden">
-                        <div class="absolute right-0 top-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
-                        <p class="text-blue-100 text-xs font-black uppercase tracking-widest mb-2 relative z-10">Token Akses Siswa</p>
-                        <div class="text-3xl font-mono font-black tracking-widest relative z-10">
-                            {{ $internshipApplication->token ?? '---' }}
-                        </div>
-                        <p class="text-blue-100 text-[10px] mt-4 leading-relaxed">Gunakan token ini untuk login logbook harian dan monitoring bimbingan.</p>
+                    {{-- Token Card --}}
+                    <div class="bg-blue-600 rounded-[2rem] p-8 shadow-[0_0_30px_rgba(37,99,235,0.3)] relative overflow-hidden">
+                        <div class="absolute -right-10 -top-10 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                        <p class="text-blue-200 text-[10px] font-black uppercase tracking-widest mb-2 relative z-10">Token Akses Siswa</p>
+                        <h3 class="text-3xl font-black text-white tracking-widest relative z-10">{{ $internshipApplication->token }}</h3>
+                        <p class="text-[11px] text-blue-200 mt-4 leading-relaxed relative z-10">Gunakan token ini untuk pencarian data, akses logbook, dan monitoring siswa.</p>
                     </div>
                 </div>
 
-                {{-- KOLOM KANAN: DETAIL DATA --}}
-                <div class="lg:col-span-2 space-y-8">
-                    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-                        <div class="p-8">
-                            <h4 class="text-lg font-black text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-                                <span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-sm">📋</span>
-                                Informasi Pendaftaran
-                            </h4>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Asal Sekolah / Kampus</label>
-                                    <p class="text-gray-900 dark:text-gray-100 font-bold text-lg">{{ $internshipApplication->school }}</p>
+                {{-- KANAN: INFORMASI LENGKAP PENDAFTARAN --}}
+                <div class="lg:col-span-8">
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-[2rem] p-8 shadow-2xl">
+                        
+                        <div class="flex items-center gap-3 mb-8 border-b border-zinc-800 pb-6">
+                            <div class="w-10 h-10 bg-zinc-800 rounded-xl flex items-center justify-center text-zinc-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            </div>
+                            <h3 class="text-lg font-black text-white tracking-widest uppercase">Informasi Pendaftaran Lengkap</h3>
+                        </div>
+
+                        {{-- Grid Data --}}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            {{-- Asal Sekolah --}}
+                            <div class="bg-zinc-950 p-5 rounded-2xl border border-zinc-800/50">
+                                <p class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">Asal Sekolah / Kampus</p>
+                                <p class="text-white font-bold text-sm">{{ $internshipApplication->school }}</p>
+                            </div>
+
+                            {{-- No WhatsApp --}}
+                            <div class="bg-zinc-950 p-5 rounded-2xl border border-zinc-800/50">
+                                <p class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">No. WhatsApp</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824z"/></svg>
+                                        <p class="text-white font-bold text-sm">{{ $internshipApplication->phone ?? '-' }}</p>
+                                    </div>
+                                    @if($internshipApplication->phone)
+                                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $internshipApplication->phone) }}" target="_blank" class="text-[10px] bg-green-500/10 text-green-500 px-3 py-1 rounded border border-green-500/20 font-black hover:bg-green-500 hover:text-white transition-colors">Chat &rarr;</a>
+                                    @endif
                                 </div>
-                                <div>
-                                    <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Tipe Pendaftaran</label>
-                                    <p class="text-gray-900 dark:text-gray-100 font-bold text-lg uppercase">{{ $internshipApplication->registration_type }}</p>
-                                </div>
-                                @if($internshipApplication->registration_type === 'kelompok')
-                                <div class="md:col-span-2 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-2xl border border-gray-100 dark:border-gray-600">
-                                    <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Anggota Kelompok</label>
-                                    <p class="text-gray-700 dark:text-gray-300 font-medium leading-relaxed whitespace-pre-line">{{ $internshipApplication->group_members }}</p>
-                                </div>
+                            </div>
+
+                            {{-- Tanggal Mulai --}}
+                            <div class="bg-zinc-950 p-5 rounded-2xl border border-zinc-800/50">
+                                <p class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">Tanggal Mulai Magang</p>
+                                <p class="text-white font-bold text-sm">{{ $internshipApplication->start_date ? \Carbon\Carbon::parse($internshipApplication->start_date)->translatedFormat('d F Y') : '-' }}</p>
+                            </div>
+
+                            {{-- Tanggal Selesai --}}
+                            <div class="bg-zinc-950 p-5 rounded-2xl border border-zinc-800/50">
+                                <p class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">Tanggal Selesai Magang</p>
+                                <p class="text-white font-bold text-sm">{{ $internshipApplication->end_date ? \Carbon\Carbon::parse($internshipApplication->end_date)->translatedFormat('d F Y') : '-' }}</p>
+                            </div>
+
+                            {{-- Tipe Pendaftaran --}}
+                            <div class="bg-zinc-950 p-5 rounded-2xl border border-zinc-800/50">
+                                <p class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">Tipe Pendaftaran</p>
+                                <p class="text-white font-bold text-sm uppercase">{{ $internshipApplication->registration_type }}</p>
+                            </div>
+
+                            {{-- Dokumen Surat Pengantar / Proposal --}}
+                            <div class="bg-zinc-950 p-5 rounded-2xl border border-zinc-800/50">
+                                <p class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">Surat Pengantar / Proposal</p>
+                                @if($internshipApplication->attachment_path)
+                                    <a href="{{ asset('storage/' . $internshipApplication->attachment_path) }}" target="_blank" class="inline-flex items-center gap-2 text-sm font-black text-blue-500 hover:text-blue-400 transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                        Buka Dokumen &rarr;
+                                    </a>
+                                @else
+                                    <p class="text-zinc-600 font-bold text-sm italic">Tidak melampirkan file.</p>
                                 @endif
                             </div>
+                        </div>
 
-                            <div class="mt-8">
-                                <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Alasan & Motivasi Magang</label>
-                                <div class="p-6 bg-blue-50/50 dark:bg-gray-900/50 rounded-2xl border border-blue-100 dark:border-gray-700 italic text-gray-700 dark:text-gray-300 leading-relaxed">
-                                    "{{ $internshipApplication->motivation }}"
+                        {{-- Daftar Anggota Tim (Muncul jika kelompok) --}}
+                        @if($internshipApplication->registration_type === 'kelompok' && $internshipApplication->group_members)
+                            <div class="mb-8">
+                                <p class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">Anggota Tim / Kelompok</p>
+                                <div class="bg-zinc-950 p-5 rounded-2xl border border-zinc-800/50">
+                                    <p class="text-white text-sm font-medium leading-relaxed">{{ $internshipApplication->group_members }}</p>
                                 </div>
+                            </div>
+                        @endif
+
+                        {{-- Motivasi Magang --}}
+                        <div class="mb-10">
+                            <p class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">Alasan & Motivasi Magang</p>
+                            <div class="bg-zinc-950 p-6 rounded-2xl border border-zinc-800/50">
+                                <p class="text-zinc-300 text-sm italic leading-relaxed">"{{ $internshipApplication->motivation }}"</p>
                             </div>
                         </div>
 
-                        {{-- ACTION BUTTONS --}}
-                        <div class="bg-gray-50 dark:bg-gray-700/30 p-8 border-t border-gray-100 dark:border-gray-700">
-                            @if($internshipApplication->status === 'pending')
-                                <div class="flex flex-col sm:flex-row gap-4">
-                                    <form action="{{ route('admin.internship-applications.approve', $internshipApplication->id) }}" method="POST" class="flex-1">
+                        {{-- TOMBOL AKSI (Hanya muncul jika status masih PENDING) --}}
+                        @if($internshipApplication->status == 'pending')
+                            <div class="flex flex-col sm:flex-row gap-4 border-t border-zinc-800 pt-8">
+                                
+                                {{-- Tombol Setujui --}}
+                                <form action="{{ route('admin.internship-applications.approve', $internshipApplication->id) }}" method="POST" class="flex-1">
+                                    @csrf
+                                    <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-black py-4 rounded-xl shadow-[0_0_20px_rgba(22,163,74,0.2)] transition-all flex justify-center items-center gap-2">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                        SETUJUI & KIRIM TOKEN
+                                    </button>
+                                </form>
+
+                                {{-- Tombol Tolak (Memicu Modal) --}}
+                                <button type="button" onclick="document.getElementById('modal-reject').style.display='flex'" class="flex-1 bg-transparent border-2 border-red-600/30 hover:bg-red-600/10 text-red-500 font-black py-4 rounded-xl transition-all flex justify-center items-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    TOLAK APLIKASI
+                                </button>
+
+                            </div>
+
+                            {{-- MODAL PENOLAKAN (REJECT) --}}
+                            <div id="modal-reject" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+                                <div class="bg-zinc-900 border border-zinc-800 rounded-[2rem] p-8 max-w-md w-full shadow-2xl">
+                                    <h3 class="text-2xl font-black text-white mb-2">Tolak Pendaftaran?</h3>
+                                    <p class="text-xs text-zinc-400 mb-6 leading-relaxed">Berikan alasan penolakan agar siswa mengerti. Alasan ini akan tercatat di sistem.</p>
+                                    
+                                    <form action="{{ route('admin.internship-applications.reject', $internshipApplication->id) }}" method="POST">
                                         @csrf
-                                        <button type="submit" onclick="return confirm('Terima pendaftaran ini? Token akan dikirim via email.')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 px-6 rounded-2xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                            SETUJUI & KIRIM TOKEN
-                                        </button>
-                                    </form>
-
-                                    <div class="flex-1" x-data="{ open: false }">
-                                        <button @click="open = !open" class="w-full bg-white dark:bg-gray-800 border-2 border-red-500 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 font-black py-4 px-6 rounded-2xl transition-all flex items-center justify-center gap-2">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                            TOLAK APLIKASI
-                                        </button>
-
-                                        <div x-show="open" class="mt-4 p-6 bg-white dark:bg-gray-800 rounded-2xl border border-red-200 dark:border-red-800 shadow-xl" x-cloak>
-                                            <form action="{{ route('admin.internship-applications.reject', $internshipApplication->id) }}" method="POST">
-                                                @csrf
-                                                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Alasan Penolakan:</label>
-                                                <textarea name="rejection_reason" rows="3" class="w-full rounded-xl border-gray-200 dark:border-gray-700 dark:bg-gray-900 mb-4 focus:ring-red-500" placeholder="Contoh: Kuota penuh atau data tidak valid..." required></textarea>
-                                                <div class="flex gap-2">
-                                                    <button type="submit" class="flex-1 bg-red-600 text-white font-bold py-2 rounded-lg text-sm">Konfirmasi Tolak</button>
-                                                    <button type="button" @click="open = false" class="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm font-bold">Batal</button>
-                                                </div>
-                                            </form>
+                                        <textarea name="rejection_reason" rows="4" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-4 text-white focus:border-red-600 outline-none mb-6 text-sm" placeholder="Contoh: Maaf, kuota magang untuk bulan tersebut sudah penuh..." required></textarea>
+                                        
+                                        <div class="flex gap-4">
+                                            <button type="button" onclick="document.getElementById('modal-reject').style.display='none'" class="flex-1 py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold rounded-xl transition-colors">Batal</button>
+                                            <button type="submit" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-black rounded-xl shadow-[0_0_15px_rgba(220,38,38,0.3)] transition-all">Konfirmasi Tolak</button>
                                         </div>
-                                    </div>
+                                    </form>
                                 </div>
-                            @else
-                                <div class="p-6 rounded-2xl border {{ $internshipApplication->status === 'approved' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-red-50 border-red-200 text-red-800' }} dark:bg-gray-800 dark:border-gray-600 flex items-start gap-4">
-                                    <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 {{ $internshipApplication->status === 'approved' ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600' }}">
-                                        @if($internshipApplication->status === 'approved')
-                                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                                        @else
-                                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                                        @endif
-                                    </div>
-                                    <div>
-                                        <p class="font-black">Aplikasi telah {{ $internshipApplication->status === 'approved' ? 'disetujui' : 'ditolak' }}.</p>
-                                        <p class="text-sm opacity-80">Diproses oleh {{ $internshipApplication->approved_by ?? 'Admin' }} pada {{ $internshipApplication->approved_at ?? $internshipApplication->updated_at->format('d M Y') }}.</p>
-                                        @if($internshipApplication->rejection_reason)
-                                            <div class="mt-3 p-3 bg-white/50 dark:bg-gray-900/50 rounded-lg text-sm">
-                                                <strong>Alasan Penolakan:</strong> {{ $internshipApplication->rejection_reason }}
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
+                            </div>
+                        @endif
+
                     </div>
                 </div>
-
             </div>
+            
         </div>
     </div>
 </x-app-layout>

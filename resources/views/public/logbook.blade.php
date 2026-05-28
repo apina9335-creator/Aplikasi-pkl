@@ -24,7 +24,7 @@
                 </div>
                 <div>
                     <span class="font-black text-xl tracking-tighter text-white block leading-none">SIPKL <span class="text-red-600">LOGBOOK</span></span>
-                    <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.2em]">Siswa Version 2.0</span>
+                    <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.2em]"></span>
                 </div>
             </div>
             <a href="{{ url('/') }}" class="group flex items-center gap-2 bg-zinc-800 hover:bg-red-600 transition-all duration-300 px-5 py-2.5 rounded-xl border border-zinc-700 hover:border-red-500 shadow-lg">
@@ -55,8 +55,6 @@
                             <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20"><path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0z"/></svg>
                             {{ $application->school }}
                         </span>
-                        <span class="h-4 w-[2px] bg-zinc-800 hidden md:block"></span>
-                        <span class="bg-red-600/10 text-red-500 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-red-600/20 shadow-[0_0_15px_rgba(220,38,38,0.1)]">Internship Active</span>
                     </div>
                 </div>
 
@@ -128,8 +126,9 @@
                         <div class="flex flex-col md:flex-row gap-8">
                             <div class="flex-1">
                                 <div class="flex items-center gap-4 mb-6">
+                                    {{-- PERBAIKAN UTAMA: DITAMBAHKAN LOCALE ID DAN NAMA HARI --}}
                                     <div class="bg-black px-5 py-2 rounded-xl text-[10px] font-black text-red-500 border border-zinc-800 uppercase tracking-[0.2em]">
-                                        {{ \Carbon\Carbon::parse($report->activity_date)->translatedFormat('d F Y') }}
+                                        {{ \Carbon\Carbon::parse($report->activity_date)->locale('id')->translatedFormat('l, d F Y') }}
                                     </div>
                                     
                                     <div class="h-[2px] flex-1 bg-zinc-800"></div>
@@ -148,6 +147,15 @@
                                 <p class="text-zinc-300 leading-relaxed font-bold text-lg md:text-xl group-hover:text-white transition-colors">
                                     {{ $report->description }}
                                 </p>
+
+                                {{-- TEMPAT MUNCULNYA KOMENTAR GURU --}}
+                                @if($report->advisor_comment)
+                                    <div class="mt-4 bg-black/40 p-4 rounded-xl border border-zinc-800 border-l-2 border-l-red-500">
+                                        <p class="text-[10px] text-zinc-500 font-black uppercase mb-1">Catatan Pembimbing:</p>
+                                        <p class="text-sm text-zinc-300 italic">"{{ $report->advisor_comment }}"</p>
+                                    </div>
+                                @endif
+
                             </div>
                             
                             @if($report->image_path)

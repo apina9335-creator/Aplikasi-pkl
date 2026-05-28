@@ -6,6 +6,11 @@
     <title>SIPKL - Monitoring Kegiatan</title>
     {{-- JALAN PINTAS: Memanggil Tailwind CSS langsung dari server internet --}}
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Efek transisi smooth untuk gambar */
+        .zoom-hover { transition: transform 0.7s ease-in-out; }
+        .group:hover .zoom-hover { transform: scale(1.1); }
+    </style>
 </head>
 <body class="min-h-screen bg-black text-slate-100 pb-20 selection:bg-red-600 selection:text-white font-sans antialiased">
     
@@ -36,6 +41,14 @@
 
     <div class="max-w-5xl mx-auto pt-10 px-6 relative z-10">
         
+        {{-- PESAN SUKSES SETELAH KOMENTAR DISIMPAN --}}
+        @if(session('success'))
+            <div class="mb-6 bg-green-500/20 border border-green-500 text-green-400 px-6 py-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-3">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                {{ session('success') }}
+            </div>
+        @endif
+
         {{-- HEADER TARGET MONITORING --}}
         <div class="bg-zinc-900 border border-zinc-800 rounded-[2.5rem] p-8 md:p-10 shadow-2xl mb-12 relative overflow-hidden group">
             <div class="absolute right-0 top-0 w-80 h-full bg-gradient-to-l from-red-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
@@ -43,16 +56,16 @@
             <div class="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
                 <div class="relative">
                     <div class="w-24 h-24 bg-zinc-800 rounded-[2rem] flex items-center justify-center text-red-600 text-4xl font-black shadow-2xl border-2 border-zinc-700 group-hover:border-red-600 transition-colors duration-500">
-                        {{ substr($application->name, 0, 1) }}
+                        {{ strtoupper(substr($application->name, 0, 1)) }}
                     </div>
                 </div>
 
                 <div class="flex-1">
                     <p class="text-[10px] font-black text-red-500 uppercase tracking-[0.3em] mb-2 flex items-center justify-center md:justify-start gap-2">
                         <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                        Monitoring Target
+                        Target Magang
                     </p>
-                    <h2 class="text-3xl md:text-4xl font-black text-white leading-tight mb-2 tracking-tight">{{ $application->name }}</h2>
+                    <h2 class="text-3xl md:text-4xl font-black text-white leading-tight mb-2 tracking-tight capitalize">{{ $application->name }}</h2>
                     <p class="text-sm font-bold text-zinc-400 flex items-center justify-center md:justify-start gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                         {{ $application->school }}
@@ -66,61 +79,138 @@
             </div>
         </div>
 
-        {{-- DAFTAR LAPORAN (TIMELINE) --}}
+        @php
+            $laporanHariIni = $reports->firstWhere('activity_date', \Carbon\Carbon::today()->toDateString());
+        @endphp
+
+        {{-- HIGHLIGHT: PROGRES HARI INI --}}
+        @if($laporanHariIni)
+            <div class="mb-16 bg-gradient-to-br from-red-900/30 to-black border-2 border-red-600/50 rounded-[2.5rem] p-1 shadow-[0_0_50px_rgba(220,38,38,0.15)] relative overflow-hidden group">
+                <div class="absolute top-0 right-8 bg-red-600 text-white text-xs font-black uppercase px-6 py-2 rounded-b-xl tracking-widest z-20 shadow-lg">
+                    🔥 Progres Hari Ini
+                </div>
+                
+                <div class="bg-zinc-900/90 rounded-[2.3rem] p-8 md:p-10 flex flex-col md:flex-row gap-8 relative z-10 backdrop-blur-sm">
+                    <div class="flex-1">
+                        <p class="text-red-500 font-bold mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            {{ \Carbon\Carbon::parse($laporanHariIni->activity_date)->locale('id')->translatedFormat('l, d F Y') }}
+                        </p>
+                        <h3 class="text-2xl md:text-3xl font-black text-white mb-6 leading-relaxed">{{ $laporanHariIni->description }}</h3>
+                        
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-black/50 border border-zinc-800">
+                            @if($laporanHariIni->status == 'approved')
+                                <div class="w-2 h-2 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.8)]"></div>
+                                <span class="text-xs font-black text-green-500 uppercase tracking-widest">Disetujui Pembimbing</span>
+                            @else
+                                <div class="w-2 h-2 bg-yellow-500 rounded-full shadow-[0_0_8px_rgba(234,179,8,0.8)] animate-pulse"></div>
+                                <span class="text-xs font-black text-yellow-500 uppercase tracking-widest">Menunggu Pemeriksaan</span>
+                            @endif
+                        </div>
+
+                        {{-- KOTAK KOMENTAR GURU (HARI INI) --}}
+                        @if($laporanHariIni->advisor_comment)
+                            <div class="mt-6 bg-black/40 p-5 rounded-2xl border border-zinc-800 border-l-4 border-l-red-500">
+                                <p class="text-[10px] text-zinc-500 font-black uppercase mb-1">Catatan Pembimbing:</p>
+                                <p class="text-sm text-zinc-300 italic">"{{ $laporanHariIni->advisor_comment }}"</p>
+                            </div>
+                        @else
+                            <form action="{{ route('token.monitor.comment', $laporanHariIni->id) }}" method="POST" class="mt-6 w-full">
+                                @csrf
+                                <textarea name="advisor_comment" rows="2" required class="w-full bg-black/50 border border-zinc-700 rounded-xl p-4 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-red-500 transition-colors" placeholder="Ketik catatan atau evaluasi untuk siswa di sini..."></textarea>
+                                <button type="submit" class="mt-3 bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2.5 px-6 rounded-lg transition-colors shadow-lg">
+                                    Simpan Komentar & Setujui
+                                </button>
+                            </form>
+                        @endif
+
+                    </div>
+
+                    @if($laporanHariIni->image_path)
+                        <div class="w-full md:w-80 h-56 rounded-3xl overflow-hidden shrink-0 border-4 border-zinc-800 shadow-2xl relative">
+                            <a href="{{ asset('storage/'.$laporanHariIni->image_path) }}" target="_blank" class="block w-full h-full">
+                                <img src="{{ asset('storage/'.$laporanHariIni->image_path) }}" class="w-full h-full object-cover zoom-hover" alt="Foto Progres">
+                            </a>
+                        </div>
+                    @else
+                        <div class="w-full md:w-80 h-56 rounded-3xl bg-zinc-800 border-2 border-dashed border-zinc-700 flex flex-col items-center justify-center text-zinc-500">
+                            <svg class="w-12 h-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <span class="text-sm font-bold">Tidak ada foto dilampirkan</span>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        @endif
+
+        {{-- DAFTAR LAPORAN (TIMELINE LENGKAP) --}}
         <div class="space-y-8">
             <div class="flex items-center gap-4 px-4">
                 <div class="h-[1px] flex-1 bg-gradient-to-r from-transparent via-zinc-800 to-transparent"></div>
-                <h3 class="text-xl font-black text-zinc-400 uppercase tracking-[0.2em]">Rekaman Aktivitas</h3>
+                <h3 class="text-lg font-black text-zinc-500 uppercase tracking-[0.2em]">Riwayat Laporan Sebelumnya</h3>
                 <div class="h-[1px] flex-1 bg-gradient-to-r from-transparent via-zinc-800 to-transparent"></div>
             </div>
 
             @forelse($reports as $report)
-                <div class="group bg-zinc-900 border border-zinc-800 rounded-[2.5rem] p-8 hover:border-red-600/50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-500">
-                    <div class="flex flex-col md:flex-row gap-8">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-4 mb-6">
-                                <div class="bg-black px-5 py-2 rounded-xl text-[10px] font-black text-red-500 border border-zinc-800 uppercase tracking-[0.2em]">
-                                    {{ \Carbon\Carbon::parse($report->activity_date)->translatedFormat('l, d M Y') }}
-                                </div>
-                                
-                                <div class="h-[2px] flex-1 bg-zinc-800"></div>
+                @if($laporanHariIni && $report->id === $laporanHariIni->id)
+                    @continue 
+                @endif
 
+                <div class="group bg-zinc-900 border border-zinc-800 rounded-[2rem] p-6 md:p-8 hover:border-zinc-600 transition-all duration-300">
+                    <div class="flex flex-col md:flex-row gap-6">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="bg-black px-4 py-1.5 rounded-lg text-[10px] font-black text-zinc-400 border border-zinc-800 uppercase tracking-widest">
+                                    {{ \Carbon\Carbon::parse($report->activity_date)->locale('id')->translatedFormat('l, d F Y') }}
+                                </div>
                                 @if($report->status == 'approved')
-                                    <span class="flex items-center gap-1.5 text-[10px] font-black text-green-500 uppercase tracking-widest">
-                                        <div class="w-2 h-2 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.8)]"></div> Disetujui
-                                    </span>
+                                    <div class="text-[10px] text-green-500 font-bold uppercase tracking-wider">Disetujui</div>
                                 @else
-                                    <span class="flex items-center gap-1.5 text-[10px] font-black text-zinc-500 uppercase tracking-widest">
-                                        <div class="w-2 h-2 bg-zinc-600 rounded-full"></div> Menunggu
-                                    </span>
+                                    <div class="text-[10px] text-yellow-500 font-bold uppercase tracking-wider">Pending</div>
                                 @endif
+                                <div class="h-[1px] flex-1 bg-zinc-800"></div>
                             </div>
                             
-                            <p class="text-zinc-300 leading-relaxed font-bold text-lg md:text-xl group-hover:text-white transition-colors">
+                            <p class="text-zinc-400 leading-relaxed font-medium text-base group-hover:text-zinc-200 transition-colors">
                                 {{ $report->description }}
                             </p>
+
+                            {{-- KOTAK KOMENTAR GURU (RIWAYAT) --}}
+                            @if($report->advisor_comment)
+                                <div class="mt-4 bg-black/40 p-4 rounded-xl border border-zinc-800 border-l-2 border-l-red-500">
+                                    <p class="text-[10px] text-zinc-500 font-black uppercase mb-1">Catatan Pembimbing:</p>
+                                    <p class="text-sm text-zinc-300 italic">"{{ $report->advisor_comment }}"</p>
+                                </div>
+                            @else
+                                <form action="{{ route('token.monitor.comment', $report->id) }}" method="POST" class="mt-4 w-full">
+                                    @csrf
+                                    <textarea name="advisor_comment" rows="1" required class="w-full bg-black/30 border border-zinc-700 rounded-lg p-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-red-500 transition-colors" placeholder="Berikan komentar untuk laporan ini..."></textarea>
+                                    <button type="submit" class="mt-2 bg-zinc-800 hover:bg-red-600 text-white text-xs font-bold py-2 px-5 rounded-lg border border-zinc-700 hover:border-red-500 transition-all">
+                                        Simpan & Setujui
+                                    </button>
+                                </form>
+                            @endif
+
                         </div>
                         
                         @if($report->image_path)
-                            <div class="w-full md:w-64 h-40 rounded-3xl overflow-hidden shrink-0 border-4 border-black shadow-2xl group-hover:border-red-600/30 transition-all duration-500 relative">
+                            <div class="w-full md:w-48 h-32 rounded-2xl overflow-hidden shrink-0 border-2 border-zinc-800 group-hover:border-zinc-600 transition-colors">
                                 <a href="{{ asset('storage/'.$report->image_path) }}" target="_blank" class="block w-full h-full">
-                                    <div class="absolute inset-0 bg-red-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex items-center justify-center pointer-events-none">
-                                        <svg class="w-8 h-8 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
-                                    </div>
-                                    <img src="{{ asset('storage/'.$report->image_path) }}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 scale-105 group-hover:scale-110 transition-all duration-700" alt="Dokumentasi">
+                                    <img src="{{ asset('storage/'.$report->image_path) }}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 zoom-hover" alt="Dokumentasi">
                                 </a>
                             </div>
                         @endif
                     </div>
                 </div>
             @empty
-                <div class="bg-zinc-900 rounded-[2.5rem] p-20 text-center border border-zinc-800 shadow-inner">
-                    <div class="w-24 h-24 bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-8 text-zinc-700">
-                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                @if(!$laporanHariIni)
+                    <div class="bg-zinc-900 rounded-[2.5rem] p-20 text-center border border-zinc-800 shadow-inner">
+                        <div class="w-24 h-24 bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-8 text-zinc-700">
+                            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        </div>
+                        <h4 class="text-xl font-black text-white mb-2 uppercase tracking-widest">Belum Ada Aktivitas</h4>
+                        <p class="text-zinc-500 font-bold">Siswa target ini belum mencatat progres harian apapun ke dalam sistem.</p>
                     </div>
-                    <h4 class="text-xl font-black text-white mb-2 uppercase tracking-widest">Belum Ada Aktivitas</h4>
-                    <p class="text-zinc-500 font-bold">Siswa target ini belum mencatat progres harian apapun ke dalam sistem.</p>
-                </div>
+                @endif
             @endforelse
         </div>
         

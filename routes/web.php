@@ -79,7 +79,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/internship-applications/{internshipApplication}/approve', [AdminInternshipAppController::class, 'approve'])->name('internship-applications.approve');
             Route::post('/internship-applications/{internshipApplication}/reject', [AdminInternshipAppController::class, 'reject'])->name('internship-applications.reject');
             
-            // 👇 INI YANG BARU KITA TAMBAHKAN 👇 (Rute untuk Menghapus)
+            // Rute untuk Menghapus
             Route::delete('/internship-applications/{internshipApplication}', [AdminInternshipAppController::class, 'destroy'])->name('internship-applications.destroy');
         });
 
@@ -135,3 +135,6 @@ require __DIR__.'/auth.php';
 Route::get('/akses-logbook', [App\Http\Controllers\TokenAccessController::class, 'logbook'])->name('token.logbook');
 Route::post('/akses-logbook', [App\Http\Controllers\TokenAccessController::class, 'storeLogbook'])->name('token.logbook.store');
 Route::get('/monitoring-siswa', [App\Http\Controllers\TokenAccessController::class, 'monitor'])->name('token.monitor');
+
+// FITUR BARU: Rute Tambah Komentar & Setujui
+Route::post('/token-monitoring/comment/{report}', [App\Http\Controllers\TokenAccessController::class, 'addComment'])->name('token.monitor.comment');

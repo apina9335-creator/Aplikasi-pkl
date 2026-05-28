@@ -39,13 +39,5 @@
             </button>
         </div>
         
-        <div class="mt-4 text-center">
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-                Belum punya akun? 
-                <a href="{{ route('register') }}" class="font-bold text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                    Daftar Mahasiswa Baru
-                </a>
-            </p>
-        </div>
     </form>
 </x-guest-layout>

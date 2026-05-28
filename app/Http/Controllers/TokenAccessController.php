@@ -67,4 +67,20 @@ class TokenAccessController extends Controller
 
         return view('public.monitoring', compact('application', 'reports'));
     }
+
+    // 4. SIMPAN KOMENTAR GURU & APPROVE LAPORAN
+    public function addComment(Request $request, Report $report)
+    {
+        $request->validate([
+            'advisor_comment' => 'required|string|max:1000'
+        ]);
+
+        // Simpan komentar dan otomatis ubah status laporan menjadi disetujui
+        $report->update([
+            'advisor_comment' => $request->advisor_comment,
+            'status' => 'approved' 
+        ]);
+
+        return back()->with('success', 'Komentar berhasil dikirim dan Laporan harian telah disetujui!');
+    }
 }

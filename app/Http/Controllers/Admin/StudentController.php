@@ -10,33 +10,36 @@ class StudentController extends Controller
 {
     public function index()
     {
-        // 1. AMBIL SEMUA PENDAFTAR YANG SUDAH DI-ACC (APPROVED)
+        // 1. Ambil semua pendaftar yang sudah lolos (approved)
         $students = InternshipApplication::where('status', 'approved')->latest()->get();
 
         $pklStudents = collect();
         $magangStudents = collect();
-        $otherStudents = collect();
 
-        // 2. LOGIKA PEMISAHAN PKL (SMK) DAN MAGANG (KAMPUS)
+        // 2. Pisahkan PKL dan Magang, lalu HAPUS KATEGORI "LAINNYA"
         foreach ($students as $student) {
-            $schoolNameLower = strtolower($student->school ?? '');
+            $schoolNameLower = strtolower(trim($student->school ?? ''));
 
-            if (empty($schoolNameLower)) {
-                $otherStudents->push($student);
+            if (empty($schoolNameLower) || $schoolNameLower === 'lainnya') {
+                continue; // Skip / Hapus jika asalnya "Lainnya"
             } elseif (str_contains($schoolNameLower, 'smk') || str_contains($schoolNameLower, 'sma') || str_contains($schoolNameLower, 'sekolah')) {
                 $pklStudents->push($student);
-            } elseif (str_contains($schoolNameLower, 'universitas') || str_contains($schoolNameLower, 'institut') || str_contains($schoolNameLower, 'politeknik') || str_contains($schoolNameLower, 'akademi') || str_contains($schoolNameLower, 'ugm') || str_contains($schoolNameLower, 'uin')) {
-                $magangStudents->push($student);
             } else {
-                // Masuk Lainnya jika tidak ada kata kunci yang cocok
-                $otherStudents->push($student); 
+                // Selain SMK/SMA masuk ke Magang (Kampus)
+                $magangStudents->push($student);
             }
         }
 
-        return view('admin.students.index', compact('pklStudents', 'magangStudents', 'otherStudents'));
+        // 3. Ambil daftar nama sekolah/kampus untuk filter dropdown (tanpa 'Lainnya')
+        $sekolahUnik = $students->pluck('school')->map(function($s) {
+            return trim($s);
+        })->filter(function($s) {
+            return strtolower($s) !== 'lainnya' && !empty($s);
+        })->unique()->values();
+
+        return view('admin.students.index', compact('pklStudents', 'magangStudents', 'sekolahUnik'));
     }
 
-    // Fungsi untuk menghapus data peserta yang sudah di-ACC
     public function destroy($id)
     {
         $student = InternshipApplication::findOrFail($id);

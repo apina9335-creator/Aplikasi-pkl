@@ -24,6 +24,7 @@ class Report extends Model
         'feedback',
         'reviewed_by',
         'reviewed_at',
+        'advisor_comment',
     ];
     /**
      * Mengubah format data saat diambil dari database

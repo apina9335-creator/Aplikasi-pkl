@@ -8,11 +8,11 @@
 
         <title>SIPKL | Home</title>
 
-        {{-- Menggunakan CSS Bootstrap dari sumber Global Intermedia seperti permintaan --}}
-        <link rel="stylesheet" type="text/css" href="//gi.co.id/dist/bootstrap/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="//gi.co.id/dist/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-        <link rel="stylesheet" type="text/css" href="//gi.co.id/dist/fonts/animate/animate.min.css">
-        <link rel="stylesheet" type="text/css" href="//gi.co.id/dist/css/style.css?version=1">
+        {{-- PERBAIKAN: Menambahkan https: pada semua aset GI agar tidak loading terus menerus --}}
+        <link rel="stylesheet" type="text/css" href="https://gi.co.id/dist/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="https://gi.co.id/dist/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="https://gi.co.id/dist/fonts/animate/animate.min.css">
+        <link rel="stylesheet" type="text/css" href="https://gi.co.id/dist/css/style.css?version=1">
 
         {{-- Tambahan CSS khusus untuk Modal SIPKL --}}
         <style>
@@ -90,13 +90,15 @@
                         </ol>
                         <div class="carousel-inner" role="listbox">
                                 <div class="carousel-item active">
-                                        <img src="//gi.co.id/dist/images/intro-carousel/slide_1.jpg" class="img-responsive" alt="">
+                                        {{-- PERBAIKAN: Gambar menggunakan https: --}}
+                                        <img src="https://gi.co.id/dist/images/intro-carousel/slide_1.jpg" class="img-responsive" alt="">
                                         <div class="carousel-container">
                                                 <div class="carousel-content">&nbsp;</div>
                                         </div>
                                 </div>
                                 <div class="carousel-item">
-                                        <img src="//gi.co.id/dist/images/intro-carousel/slide_2.jpg" class="img-responsive" alt="">
+                                        {{-- PERBAIKAN: Gambar menggunakan https: --}}
+                                        <img src="https://gi.co.id/dist/images/intro-carousel/slide_2.jpg" class="img-responsive" alt="">
                                         <div class="carousel-container">
                                                 <div class="carousel-content">&nbsp;</div>
                                         </div>
@@ -199,10 +201,11 @@
             </div>
         </div>
 
-        <script src="//gi.co.id/dist/js/jquery/jquery-3.2.1.min.js" type="text/javascript"></script>
-        <script src="//gi.co.id/dist/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-        <script src="//gi.co.id/dist/fonts/wow/wow.min.js"></script>
-        <script src="//gi.co.id/dist/js/main.js"></script>
+        {{-- PERBAIKAN: Menambahkan https: pada script js --}}
+        <script src="https://gi.co.id/dist/js/jquery/jquery-3.2.1.min.js" type="text/javascript"></script>
+        <script src="https://gi.co.id/dist/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="https://gi.co.id/dist/fonts/wow/wow.min.js"></script>
+        <script src="https://gi.co.id/dist/js/main.js"></script>
         
         {{-- SCRIPT UNTUK MODAL & NAVBAR --}}
         <script type="text/javascript">

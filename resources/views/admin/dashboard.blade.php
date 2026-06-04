@@ -1,7 +1,11 @@
 <x-app-layout>
-    <div class="min-h-screen bg-zinc-950 text-slate-100 antialiased">
+    
+    {{-- EFEK BARU: GRADASI MERAH DI PINGGIR LAYAR (VIGNETTE) --}}
+    <div class="fixed inset-0 pointer-events-none shadow-[inset_0_0_150px_rgba(220,38,38,0.15)] z-50"></div>
+
+    <div class="min-h-screen bg-slate-50 text-slate-800 antialiased relative">
         <x-slot name="header">
-            <h2 class="font-black text-2xl text-white leading-tight flex items-center gap-3">
+            <h2 class="font-black text-2xl text-slate-900 leading-tight flex items-center gap-3 relative z-10">
                 <div class="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(220,38,38,0.4)]">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                 </div>
@@ -9,15 +13,15 @@
             </h2>
         </x-slot>
 
-        <div class="py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+        <div class="py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 relative z-10">
             
             {{-- 1. GRAFIK UTAMA --}}
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 {{-- Grafik Batang (Tren) --}}
-                <div class="lg:col-span-8 bg-zinc-900 border border-zinc-800 rounded-[2rem] p-8 shadow-2xl">
+                <div class="lg:col-span-8 bg-white border border-red-100 rounded-[2rem] p-8 shadow-[0_0_30px_rgba(220,38,38,0.03)] hover:shadow-[0_0_30px_rgba(220,38,38,0.08)] transition-shadow">
                     <div class="flex items-center justify-between mb-8">
-                        <h3 class="text-lg font-black uppercase tracking-[0.2em] text-zinc-400">Analitik Pendaftar</h3>
-                        <span class="bg-red-600/10 text-red-500 px-3 py-1 rounded-full text-[10px] font-black border border-red-600/20">6 BULAN TERAKHIR</span>
+                        <h3 class="text-lg font-black uppercase tracking-[0.2em] text-gray-500">Analitik Pendaftar</h3>
+                        <span class="bg-red-50 text-red-600 px-3 py-1 rounded-full text-[10px] font-black border border-red-100">6 BULAN TERAKHIR</span>
                     </div>
                     <div class="h-72 w-full">
                         <canvas id="trendChart"></canvas>
@@ -25,19 +29,19 @@
                 </div>
 
                 {{-- Grafik Donat (Tipe) --}}
-                <div class="lg:col-span-4 bg-zinc-900 border border-zinc-800 rounded-[2rem] p-8 shadow-2xl flex flex-col justify-between">
-                    <h3 class="text-lg font-black uppercase tracking-[0.2em] text-zinc-400 mb-6 text-center">Rasio Pendaftaran</h3>
+                <div class="lg:col-span-4 bg-white border border-red-100 rounded-[2rem] p-8 shadow-[0_0_30px_rgba(220,38,38,0.03)] hover:shadow-[0_0_30px_rgba(220,38,38,0.08)] transition-shadow flex flex-col justify-between">
+                    <h3 class="text-lg font-black uppercase tracking-[0.2em] text-gray-500 mb-6 text-center">Rasio Pendaftaran</h3>
                     <div class="h-56 w-full relative">
                         <canvas id="typeChart"></canvas>
                     </div>
                     <div class="grid grid-cols-2 gap-4 mt-6">
-                        <div class="bg-black/40 p-3 rounded-2xl text-center border border-zinc-800">
-                            <p class="text-2xl font-black text-red-500">{{ $individuCount }}</p>
-                            <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">Individu</p>
+                        <div class="bg-red-50/50 p-3 rounded-2xl text-center border border-red-100">
+                            <p class="text-2xl font-black text-red-600">{{ $individuCount }}</p>
+                            <p class="text-[9px] text-red-500 font-bold uppercase tracking-widest">Individu</p>
                         </div>
-                        <div class="bg-black/40 p-3 rounded-2xl text-center border border-zinc-800">
-                            <p class="text-2xl font-black text-white">{{ $kelompokCount }}</p>
-                            <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">Kelompok</p>
+                        <div class="bg-gray-50 p-3 rounded-2xl text-center border border-gray-100">
+                            <p class="text-2xl font-black text-slate-800">{{ $kelompokCount }}</p>
+                            <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Kelompok</p>
                         </div>
                     </div>
                 </div>
@@ -47,29 +51,28 @@
             <div class="grid grid-cols-1 lg:grid-cols-1 gap-8">
                 
                 {{-- Panel Data Lamaran --}}
-                <div class="bg-zinc-900 border border-zinc-800 rounded-[2rem] overflow-hidden shadow-2xl">
-                    <div class="p-6 border-b border-zinc-800 flex justify-between items-center bg-zinc-900/50">
-                        <h3 class="font-black text-white tracking-widest uppercase text-sm">Lamaran Terbaru</h3>
-                        <a href="{{ route('admin.internship-applications.index') }}" class="text-[10px] font-black text-red-500 hover:text-red-400">LIHAT SEMUA &rarr;</a>
+                <div class="bg-white border border-red-100 rounded-[2rem] overflow-hidden shadow-[0_0_30px_rgba(220,38,38,0.03)] hover:shadow-[0_0_30px_rgba(220,38,38,0.08)] transition-shadow">
+                    <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-red-50/30">
+                        <h3 class="font-black text-slate-800 tracking-widest uppercase text-sm">Lamaran Terbaru</h3>
+                        <a href="{{ route('admin.internship-applications.index') }}" class="text-[10px] font-black text-red-600 hover:text-red-800 transition-colors">LIHAT SEMUA &rarr;</a>
                     </div>
                     <div class="p-4 space-y-3">
                         @forelse($latestApplications as $app)
-                            <div class="flex items-center gap-4 bg-black/30 p-4 rounded-2xl border border-zinc-800/50 hover:border-red-600/30 transition-colors">
-                                <div class="w-10 h-10 bg-zinc-800 rounded-xl flex items-center justify-center font-black text-red-600">
+                            <div class="flex items-center gap-4 bg-white p-4 rounded-2xl border border-gray-100 hover:border-red-300 transition-colors shadow-sm hover:shadow-[0_0_15px_rgba(220,38,38,0.05)]">
+                                <div class="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center font-black text-red-600 border border-red-100">
                                     {{ substr($app->name, 0, 1) }}
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-bold text-white truncate">{{ $app->name }}</p>
-                                    <p class="text-[10px] text-zinc-500 font-medium truncate">{{ $app->school }}</p>
+                                    <p class="text-sm font-bold text-slate-800 truncate capitalize">{{ $app->name }}</p>
+                                    <p class="text-[10px] text-gray-500 font-medium truncate">{{ $app->school }}</p>
                                 </div>
-                                <span class="px-2 py-1 bg-zinc-800 text-[9px] font-black uppercase tracking-tighter text-zinc-400 rounded-md">{{ $app->status }}</span>
+                                <span class="px-3 py-1 bg-gray-50 text-[9px] font-black uppercase tracking-widest text-gray-500 rounded-lg border border-gray-200">{{ $app->status }}</span>
                             </div>
                         @empty
-                            <p class="text-center py-10 text-zinc-600 text-sm italic">Belum ada lamaran masuk.</p>
+                            <p class="text-center py-10 text-gray-500 text-sm italic">Belum ada lamaran masuk.</p>
                         @endforelse
                     </div>
                 </div>
-
 
             </div>
         </div>
@@ -79,7 +82,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            Chart.defaults.color = '#71717a';
+            Chart.defaults.color = '#6b7280'; 
             Chart.defaults.font.family = "'Inter', 'Segoe UI', sans-serif";
 
             // 1. Grafik Batang Tren
@@ -99,7 +102,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        y: { beginAtZero: true, grid: { color: '#27272a' }, ticks: { font: { weight: 'bold' }, stepSize: 1 } },
+                        y: { beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { font: { weight: 'bold' }, stepSize: 1 } },
                         x: { grid: { display: false }, ticks: { font: { weight: 'bold' } } }
                     },
                     plugins: { legend: { display: false } }
@@ -113,7 +116,7 @@
                     labels: ['Individu', 'Kelompok'],
                     datasets: [{
                         data: [{{ $individuCount }}, {{ $kelompokCount }}],
-                        backgroundColor: ['#dc2626', '#ffffff'],
+                        backgroundColor: ['#dc2626', '#1e293b'], 
                         borderWidth: 0,
                         hoverOffset: 15,
                         cutout: '80%'

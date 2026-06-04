@@ -163,11 +163,11 @@
                         </div>
                     </div>
 
-                    {{-- Baris 5: Upload File --}}
+                    {{-- Baris 5: Upload File (NAMA INPUT SUDAH DIPERBAIKI DI SINI) --}}
                     <div>
                         <label class="block text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-3 text-shadow">Surat Pengantar / Proposal (PDF)</label>
                         <div class="bg-black/50 backdrop-blur-md border-2 border-dashed border-zinc-600 rounded-[2rem] p-8 text-center hover:border-red-500 hover:bg-black/70 transition-colors group">
-                            <input type="file" name="attachment_path" accept=".pdf" required class="w-full text-xs text-zinc-400 file:mr-4 file:py-2.5 file:px-6 file:rounded-full file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-widest file:bg-zinc-800 file:text-white hover:file:bg-red-600 hover:file:shadow-[0_0_15px_rgba(220,38,38,0.5)] file:transition-all cursor-pointer">
+                            <input type="file" name="document_file" accept=".pdf" required class="w-full text-xs text-zinc-400 file:mr-4 file:py-2.5 file:px-6 file:rounded-full file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-widest file:bg-zinc-800 file:text-white hover:file:bg-red-600 hover:file:shadow-[0_0_15px_rgba(220,38,38,0.5)] file:transition-all cursor-pointer">
                             <p class="mt-4 text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Format Wajib PDF &bull; Maksimal 5MB</p>
                         </div>
                     </div>

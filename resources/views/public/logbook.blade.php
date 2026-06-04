@@ -67,7 +67,8 @@
                     <p class="text-sm font-bold text-zinc-300 mb-8">Ceritakan apa saja yang kamu kerjakan atau pelajari di tempat magang hari ini.</p>
                 </div>
 
-                <form action="{{ route('student.reports.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                {{-- PASTIKAN ACTION INI MENGARAH KE RUTE YANG BENAR (token.logbook.store) --}}
+                <form action="{{ route('token.logbook.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
 
                     <div class="flex flex-col md:flex-row gap-6">
